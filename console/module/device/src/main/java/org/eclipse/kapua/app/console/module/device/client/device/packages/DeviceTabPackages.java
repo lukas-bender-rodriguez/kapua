@@ -268,8 +268,7 @@ public class DeviceTabPackages extends KapuaTabItem<GwtDevice> {
 
                     //
                     // Exit dialog
-                    InfoDialog exitDialog = new InfoDialog(exitDialogType,
-                            exitMessage);
+                    InfoDialog exitDialog = new InfoDialog(exitDialogType, exitMessage);
 
                     exitDialog.show();
 
@@ -312,8 +311,7 @@ public class DeviceTabPackages extends KapuaTabItem<GwtDevice> {
 
                         //
                         // Exit dialog
-                        InfoDialog exitDialog = new InfoDialog(exitDialogType,
-                                exitMessage);
+                        InfoDialog exitDialog = new InfoDialog(exitDialogType, exitMessage);
 
                         exitDialog.show();
 
