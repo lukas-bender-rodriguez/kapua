@@ -43,8 +43,12 @@ public class HonoClient {
     private org.eclipse.hono.client.HonoClient honoClient;
     private Consumer<Message> messageConsumer;
 
-    public HonoClient(Vertx vertx, Consumer<Message> messageConsumer) {
+    public HonoClient(Vertx vertx, ClientOptions clientOptions) {
         this.vertx = vertx;
+        this.clientOptions = clientOptions;
+    }
+
+    public void messageHandler(Consumer<Message> messageConsumer) {
         this.messageConsumer = messageConsumer;
     }
 

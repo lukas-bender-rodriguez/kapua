@@ -45,9 +45,14 @@ public class AmqpHonoSource extends AbstractAmqpSource<byte[]> {
 
     private HonoClient honoClient;
 
-    public AmqpHonoSource(Vertx vertx) {
+    public static AmqpHonoSource create(Vertx vertx, HonoClient consumer) {
+        return new AmqpHonoSource(vertx, consumer);
+    }
+
+    protected AmqpHonoSource(Vertx vertx, HonoClient honoClient) {
         super(vertx);
-        honoClient = new HonoClient(vertx, this::handleTelemetryMessage);
+        this.honoClient = honoClient;
+        honoClient.messageHandler(this::handleTelemetryMessage);
     }
 
     @Override
