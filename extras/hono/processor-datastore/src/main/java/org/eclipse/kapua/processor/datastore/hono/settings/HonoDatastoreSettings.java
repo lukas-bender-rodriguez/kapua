@@ -20,7 +20,7 @@ import org.eclipse.kapua.commons.setting.AbstractKapuaSetting;
  */
 public class HonoDatastoreSettings extends AbstractKapuaSetting<HonoDatastoreSettingsKey> {
 
-    private static final String CONNECTOR_CONFIG_RESOURCE = "kapua-connector-activemq-datastore-setting.properties";
+    private static final String CONNECTOR_CONFIG_RESOURCE = "kapua-connector-hono-datastore-setting.properties";
 
     private static final HonoDatastoreSettings INSTANCE = new HonoDatastoreSettings();
 

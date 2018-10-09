@@ -131,7 +131,7 @@ public class AmqpTransportActiveMQSource extends AbstractAmqpSource<byte[]> {
         } else {
             parameters.put(Properties.MESSAGE_TYPE, TransportMessageType.TELEMETRY);
         }
-        parameters.put(Properties.MESSAGE_DESTINATION, mqttTopic);
+        parameters.put(Properties.MESSAGE_ORIGINAL_DESTINATION, mqttTopic);
 
         //extract connection id
         try {
@@ -142,7 +142,7 @@ public class AmqpTransportActiveMQSource extends AbstractAmqpSource<byte[]> {
             }
             String connectionId = (String)tmp;
             if (connectionId!=null) {
-                parameters.put(Properties.CONNECTION_ID, connectionId);
+                parameters.put(Properties.MESSAGE_CONNECTION_ID, connectionId);
             }
         }
         catch(NullPointerException | IllegalArgumentException e) {

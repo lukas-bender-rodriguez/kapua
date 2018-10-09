@@ -14,14 +14,13 @@ package org.eclipse.kapua.processor.datastore.hono;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.eclipse.kapua.broker.client.amqp.AmqpSender;
 import org.eclipse.kapua.broker.client.hono.HonoClient;
-import org.eclipse.kapua.broker.connector.amqp.ErrorTarget;
 import org.eclipse.kapua.commons.core.ObjectFactory;
 import org.eclipse.kapua.commons.core.vertx.HealthCheckAdapter;
 import org.eclipse.kapua.connector.Properties;
 import org.eclipse.kapua.connector.hono.AmqpHonoSource;
 import org.eclipse.kapua.connector.kura.KuraPayloadProtoConverter;
+import org.eclipse.kapua.connector.logger.LoggerTarget;
 import org.eclipse.kapua.datastore.connector.DatastoreTarget;
 import org.eclipse.kapua.message.transport.TransportMessage;
 import org.eclipse.kapua.message.transport.TransportMessageType;
@@ -49,9 +48,6 @@ public class HonoDatastoreProcessorConfigFactory implements ObjectFactory<Messag
 
     @Inject 
     private SourceConfiguration sourceConfig;
-
-    @Inject 
-    private TargetConfiguration targetConfig;
 
     @Override
     public MessageProcessorConfig<byte[], TransportMessage> create() {
@@ -104,14 +100,15 @@ public class HonoDatastoreProcessorConfigFactory implements ObjectFactory<Messag
             }
         });
 
-        // Error target
-        ErrorTarget errorProcessor = ErrorTarget.getProcessor(vertx, new AmqpSender(vertx, targetConfig.createClientOptions(connectionConfig)));
+        // Error processor
+        @SuppressWarnings("rawtypes")
+        LoggerTarget errorProcessor = LoggerTarget.create();
         config.setErrorTarget(errorProcessor);
         config.getHealthCheckAdapters().add(new HealthCheckAdapter() {
 
             @Override
             public void register(HealthCheckHandler handler) {
-                handler.register("ErrorProcessor", statusEvent -> {
+                handler.register("LoggerProcessor", statusEvent -> {
                     // TODO define a more meaningful health check
                     if (errorProcessor != null) {
                         statusEvent.complete(Status.OK());

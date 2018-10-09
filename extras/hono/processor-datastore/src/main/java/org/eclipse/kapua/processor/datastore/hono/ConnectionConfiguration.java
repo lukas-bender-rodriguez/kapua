@@ -11,33 +11,30 @@
  *******************************************************************************/
 package org.eclipse.kapua.processor.datastore.hono;
 
+import org.eclipse.kapua.message.transport.TransportMessageType;
 import org.eclipse.kapua.processor.datastore.hono.settings.HonoDatastoreSettings;
 import org.eclipse.kapua.processor.datastore.hono.settings.HonoDatastoreSettingsKey;
 
 public class ConnectionConfiguration {
 
     private String connectionHost;
-
     private int port;
-
     private String username;
-
     private String password;
-
     private int connectTimeout;
-
     private int maxReconnectAttempts;
-
     private int idelTimeout;
+    private TransportMessageType transportMessageType;
 
     public ConnectionConfiguration() {
-        connectionHost = HonoDatastoreSettings.getInstance().getString(HonoDatastoreSettingsKey.CONNECTION_HOST);
-        port = HonoDatastoreSettings.getInstance().getInt(HonoDatastoreSettingsKey.CONNECTION_PORT);
-        username = HonoDatastoreSettings.getInstance().getString(HonoDatastoreSettingsKey.CONNECTION_USERNAME);
-        password = HonoDatastoreSettings.getInstance().getString(HonoDatastoreSettingsKey.CONNECTION_PASSWORD);
-        connectTimeout = HonoDatastoreSettings.getInstance().getInt(HonoDatastoreSettingsKey.CONNECT_TIMEOUT);
-        maxReconnectAttempts = HonoDatastoreSettings.getInstance().getInt(HonoDatastoreSettingsKey.MAX_RECONNECTION_ATTEMPTS);
-        idelTimeout = HonoDatastoreSettings.getInstance().getInt(HonoDatastoreSettingsKey.IDLE_TIMEOUT);
+        connectionHost = HonoDatastoreSettings.getInstance().getString(HonoDatastoreSettingsKey.HONO_HOST);
+        port = HonoDatastoreSettings.getInstance().getInt(HonoDatastoreSettingsKey.HONO_PORT);
+        username = HonoDatastoreSettings.getInstance().getString(HonoDatastoreSettingsKey.HONO_USERNAME);
+        password = HonoDatastoreSettings.getInstance().getString(HonoDatastoreSettingsKey.HONO_PASSWORD);
+        connectTimeout = HonoDatastoreSettings.getInstance().getInt(HonoDatastoreSettingsKey.HONO_PROTON_CONNECT_TIMEOUT);
+        maxReconnectAttempts = HonoDatastoreSettings.getInstance().getInt(HonoDatastoreSettingsKey.HONO_PROTON_MAX_RECONNECT_ATTEMPTS);
+        idelTimeout = HonoDatastoreSettings.getInstance().getInt(HonoDatastoreSettingsKey.HONO_PROTON_IDLE_TIMEOUT);
+        transportMessageType = HonoDatastoreSettings.getInstance().get(TransportMessageType.class, HonoDatastoreSettingsKey.HONO_MESSAGE_TYPE);
     }
 
     public String getConnectionHost() {
@@ -94,5 +91,13 @@ public class ConnectionConfiguration {
 
     public void setIdelTimeout(int idelTimeout) {
         this.idelTimeout = idelTimeout;
+    }
+
+    public TransportMessageType getTransportMessageType() {
+        return transportMessageType;
+    }
+
+    public void setTransportMessageType(TransportMessageType transportMessageType) {
+        this.transportMessageType = transportMessageType;
     }
 }

@@ -53,7 +53,7 @@ public class AmqpLifecycleProcessorConfigFactory implements ObjectFactory<Messag
         AmqpConsumerConfig amqpSourceConfig = AmqpConsumerConfig.create(CONFIG_PROP_PROCESSOR_MSG_SOURCE_AMQP, configuration);
         AmqpTransportActiveMQSource consumer = AmqpTransportActiveMQSource.create(vertx, new AmqpConsumer(vertx, amqpSourceConfig.createClientOptions()));
         consumer.messageFilter(message -> {
-            String topic = (String) message.getProperties().get(Properties.MESSAGE_DESTINATION);
+            String topic = (String) message.getProperties().get(Properties.MESSAGE_ORIGINAL_DESTINATION);
             if (topic!=null && (topic.endsWith("/MQTT/BIRTH") ||
                     topic.endsWith("/MQTT/DC") ||
                     topic.endsWith("/MQTT/LWT") ||

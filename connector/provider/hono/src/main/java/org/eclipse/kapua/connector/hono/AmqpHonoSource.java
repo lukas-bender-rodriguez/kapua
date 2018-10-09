@@ -40,8 +40,14 @@ public class AmqpHonoSource extends AbstractAmqpSource<byte[]> {
 
     protected final static Logger logger = LoggerFactory.getLogger(AmqpHonoSource.class);
 
-    private final static String CONTROL_PREFIX = "c/";
-    private final static String TELEMETRY_PREFIX = "t/";
+    private final static String EVENT_PREFIX = "event/";
+    private final static String TELEMETRY_PREFIX = "telemetry/";
+    private final static String EVENT_PREFIX_SHORT = "e/";
+    private final static String TELEMETRY_PREFIX_SHORT = "t/";
+    private final static String ORIGINAL_ADDRESS = "orig_address";
+    private final static String ORIGINAL_ADAPTER = "orig_adapter";
+    private final static String DEVICE_ID = "device_id";
+    private final static String TENANT_ID = "tenant_id";
 
     private HonoClient honoClient;
 
@@ -52,7 +58,7 @@ public class AmqpHonoSource extends AbstractAmqpSource<byte[]> {
     protected AmqpHonoSource(Vertx vertx, HonoClient honoClient) {
         super(vertx);
         this.honoClient = honoClient;
-        honoClient.messageHandler(this::handleTelemetryMessage);
+        honoClient.messageHandler(this::handleTransportMessage);
     }
 
     @Override
@@ -77,7 +83,7 @@ public class AmqpHonoSource extends AbstractAmqpSource<byte[]> {
         honoClient.disconnect(disconnectFuture);
     }
 
-    private void handleTelemetryMessage(final Message message) {
+    private void handleTransportMessage(final Message message) {
         logTelemetryMessage(message);
         try {
             //TODO fix me!
@@ -111,16 +117,22 @@ public class AmqpHonoSource extends AbstractAmqpSource<byte[]> {
             to = msg.getProperties().getTo();
         }
         if (msg.getApplicationProperties()!=null && msg.getApplicationProperties().getValue()!=null) {
-            adapter = (String)msg.getApplicationProperties().getValue().get("orig_adapter");
-            origAddress = (String)msg.getApplicationProperties().getValue().get("orig_address");
+            adapter = (String)msg.getApplicationProperties().getValue().get(ORIGINAL_ADAPTER);
+            origAddress = (String)msg.getApplicationProperties().getValue().get(ORIGINAL_ADDRESS);
         }
         String deviceId = MessageHelper.getDeviceId(msg);
         String tenantId = MessageHelper.getTenantId(msg);
         if (tenantId==null && msg.getMessageAnnotations() != null && msg.getMessageAnnotations().getValue() != null) {
-            tenantId = msg.getMessageAnnotations().getValue().get(Symbol.getSymbol("tenant_id")).toString();
+            tenantId = msg.getMessageAnnotations().getValue().get(Symbol.getSymbol(TENANT_ID)).toString();
         }
-        logger.info("received telemetry message:\n\tmessage id '{}' userId '{}' destination '{}' original destination '{}' adapter '{}' tenant '{}' - device '{}' - content-type '{}' - content {}", 
-            messageId, userId, to, origAddress, adapter, tenantId, deviceId, msg.getContentType(), ((Data) msg.getBody()).getValue().toString());
+        if (logger.isInfoEnabled()) {
+            String content = null;
+            if (msg.getBody()!=null && ((Data) msg.getBody()).getValue()!=null) {
+                content = ((Data) msg.getBody()).getValue().toString();
+            }
+            logger.info("received telemetry message:\n\tmessage id '{}' userId '{}' destination '{}' original destination '{}' adapter '{}' tenant '{}' - device '{}' - content-type '{}' - content {}", 
+                    messageId, userId, to, origAddress, adapter, tenantId, deviceId, msg.getContentType(), content);
+        }
     }
 
 
@@ -141,18 +153,57 @@ public class AmqpHonoSource extends AbstractAmqpSource<byte[]> {
         Map<String, Object> parameters = new HashMap<>();
         // build the message properties
         // extract original MQTT topic
-        String mqttTopic = (String)message.getApplicationProperties().getValue().get("orig_address");
-        mqttTopic = mqttTopic.replace(".", "/");
-        if (mqttTopic.startsWith(TELEMETRY_PREFIX)) {
-            parameters.put(Properties.MESSAGE_TYPE, TransportMessageType.TELEMETRY);
-            mqttTopic = mqttTopic.substring(TELEMETRY_PREFIX.length());
+        String mqttTopic = null;
+        String adapter = null;
+        String deviceId = MessageHelper.getDeviceId(message);
+        String tenantId = MessageHelper.getTenantId(message);
+        String destination = message.getProperties().getTo();
+        TransportMessageType transportMessageType = null;
+        if (message.getApplicationProperties()!=null && message.getApplicationProperties().getValue()!=null) {
+            adapter = (String)message.getApplicationProperties().getValue().get(ORIGINAL_ADAPTER);
+            mqttTopic = (String)message.getApplicationProperties().getValue().get(ORIGINAL_ADDRESS);
+            mqttTopic = mqttTopic.replace(".", "/");
+            if (destination.startsWith(TELEMETRY_PREFIX)) {
+                transportMessageType = TransportMessageType.TELEMETRY;
+                if (mqttTopic.startsWith(TELEMETRY_PREFIX)) {
+                    mqttTopic = mqttTopic.substring(TELEMETRY_PREFIX.length());
+                }
+                else if (mqttTopic.startsWith(TELEMETRY_PREFIX_SHORT)) {
+                    mqttTopic = mqttTopic.substring(TELEMETRY_PREFIX_SHORT.length());
+                }
+                else {
+                    logger.warn("Unrecognized mqtt topic '{}'. Valid values should start with '{}' or '{}'", mqttTopic, TELEMETRY_PREFIX, TELEMETRY_PREFIX_SHORT);
+                }
+            }
+            else if (destination.startsWith(EVENT_PREFIX)) {
+                transportMessageType = TransportMessageType.EVENTS;
+                if (mqttTopic.startsWith(EVENT_PREFIX)) {
+                    mqttTopic = mqttTopic.substring(EVENT_PREFIX.length());
+                }
+                else if (mqttTopic.startsWith(EVENT_PREFIX_SHORT)) {
+                    mqttTopic = mqttTopic.substring(EVENT_PREFIX_SHORT.length());
+                }
+                else {
+                    logger.warn("Unrecognized mqtt topic '{}'. Valid values should start with '{}' or '{}'", mqttTopic, EVENT_PREFIX, EVENT_PREFIX_SHORT);
+                }
+            }
+            else {
+                logger.warn("Unrecognized destination '{}'. Valid values should start with '{}' or '{}'", mqttTopic, TELEMETRY_PREFIX, EVENT_PREFIX);
+            }
+            if (deviceId==null) {
+                deviceId = (String)message.getApplicationProperties().getValue().get(DEVICE_ID);
+            }
         }
-        else if (mqttTopic.startsWith(CONTROL_PREFIX)) {
-            parameters.put(Properties.MESSAGE_TYPE, TransportMessageType.CONTROL);
-            mqttTopic = mqttTopic.substring(CONTROL_PREFIX.length());
+        if (tenantId==null && message.getMessageAnnotations() != null && message.getMessageAnnotations().getValue() != null) {
+            tenantId = message.getMessageAnnotations().getValue().get(Symbol.getSymbol(TENANT_ID)).toString();
         }
         //TODO handle alerts, ... messages types
-        parameters.put(Properties.MESSAGE_DESTINATION, mqttTopic);
+        parameters.put(Properties.MESSAGE_ORIGINAL_DESTINATION, mqttTopic);
+        parameters.put(Properties.MESSAGE_TYPE, transportMessageType);
+
+        parameters.put(Properties.MESSAGE_CLIENT_ID, deviceId);
+        parameters.put(Properties.MESSAGE_DEVICE_ADAPTER, adapter);
+        parameters.put(Properties.MESSAGE_SCOPE_NAME, tenantId);
 
         // extract the original QoS
         //TODO

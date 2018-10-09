@@ -22,6 +22,7 @@ import org.eclipse.hono.config.ClientConfigProperties;
 import org.eclipse.hono.util.MessageTap;
 import org.eclipse.hono.util.TimeUntilDisconnectNotification;
 import org.eclipse.kapua.broker.client.hono.ClientOptions.HonoClientOptions;
+import org.eclipse.kapua.message.transport.TransportMessageType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,6 +34,8 @@ import io.vertx.proton.ProtonClientOptions;
 public class HonoClient {
 
     private static final Logger logger = LoggerFactory.getLogger(HonoClient.class);
+
+    private static final String ERROR_MESSAGE_CLIENT_DETACHED = "Hono client - remotely detached consumer link";
 
     protected ClientOptions clientOptions;
     protected boolean connected;
@@ -77,20 +80,7 @@ public class HonoClient {
                 getProtonClientOptions(),
                 protonConnection -> notifyConnectionLost()
                 ).compose(connectedClient -> {
-                final Consumer<Message> telemetryHandler = MessageTap.getConsumer(
-                        messageConsumer, this::handleCommandReadinessNotification);
-                Future<MessageConsumer> futureConsumer = connectedClient.createTelemetryConsumer(
-                        clientOptions.getString(HonoClientOptions.TENANT_ID),
-                        telemetryHandler, closeHook -> {
-                            String errorMesssage = "Hono client - remotely detached consumer link";
-                            logger.error(errorMesssage);
-                            if (!connectFuture.isComplete()) {
-                                connectFuture.fail(errorMesssage);
-                            }
-                            notifyConnectionLost();
-                            }
-                        );
-                return futureConsumer;
+                return createConsumer(connectedClient, connectFuture);
         }).setHandler(result -> {
             if (!result.succeeded()) {
                 logger.error("Hono client - cannot create telemetry consumer for {}:{} - {}", host, port, result.cause());
@@ -161,7 +151,7 @@ public class HonoClient {
     }
 
     private long evaluateBackOff() {
-        Integer waitBetweenReconnect = clientOptions.getInt(HonoClientOptions.WAIT_BETWEEN_RECONNECT, null);
+        Integer waitBetweenReconnect = clientOptions.getInt(HonoClientOptions.WAIT_BETWEEN_RECONNECT, 1);
         return (1 + reconnectionFaultCount.get()) * waitBetweenReconnect + (long)((double)waitBetweenReconnect * Math.random());
     }
 
@@ -199,6 +189,48 @@ public class HonoClient {
     }
 
     protected void handleCommandReadinessNotification(final TimeUntilDisconnectNotification notification) {
+    }
+
+    private final Future<MessageConsumer> createConsumer(final org.eclipse.hono.client.HonoClient connectedClient, final Future<Void> connectFuture) {
+        TransportMessageType messageType = (TransportMessageType) clientOptions.get(HonoClientOptions.MESSAGE_TYPE);
+        String clientId = clientOptions.getString(HonoClientOptions.CLIENT_ID);
+        final Consumer<Message> messageHandler = MessageTap.getConsumer(messageConsumer, this::handleCommandReadinessNotification);
+        if (TransportMessageType.TELEMETRY.equals(messageType)) {
+            return createTelemetryConsumer(clientId, messageHandler, connectedClient, connectFuture);
+        }
+        else if (TransportMessageType.CONTROL.equals(messageType)) {
+            return createControlConsumer(clientId, messageHandler, connectedClient, connectFuture);
+        }
+        else {
+            connectFuture.fail("Wrong consumer requested!");
+            return null;
+        }
+    }
+
+    private final Future<MessageConsumer> createTelemetryConsumer(String clientId, final Consumer<Message> messageHandler, final org.eclipse.hono.client.HonoClient connectedClient, final Future<Void> connectFuture) {
+        return connectedClient.createTelemetryConsumer(
+            clientId,
+            messageHandler,
+            closeHook -> {
+                logger.error(ERROR_MESSAGE_CLIENT_DETACHED);
+                if (!connectFuture.isComplete()) {
+                    connectFuture.fail(ERROR_MESSAGE_CLIENT_DETACHED);
+                }
+                notifyConnectionLost();
+            });
+    }
+
+    private final Future<MessageConsumer> createControlConsumer(String clientId, final Consumer<Message> messageHandler, final org.eclipse.hono.client.HonoClient connectedClient, final Future<Void> connectFuture) {
+        return connectedClient.createEventConsumer(
+            clientId,
+            messageHandler,
+            closeHook -> {
+                logger.error(ERROR_MESSAGE_CLIENT_DETACHED);
+                if (!connectFuture.isComplete()) {
+                    connectFuture.fail(ERROR_MESSAGE_CLIENT_DETACHED);
+                }
+                notifyConnectionLost();
+            });
     }
 
 }

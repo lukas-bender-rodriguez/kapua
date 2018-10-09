@@ -14,76 +14,64 @@ package org.eclipse.kapua.processor.datastore.hono.settings;
 import org.eclipse.kapua.commons.setting.SettingKey;
 
 /**
- * ActiveMQDatastoreSettingsKey keys.
+ * HonoDatastoreSettingsKey keys.
  * 
  * @since 1.0
  */
 public enum HonoDatastoreSettingsKey implements SettingKey {
 
     /**
-     * Connection name (or ip)
+     * Hono connection configuration - username
      */
-    CONNECTION_HOST("activemq_datastore.connection.host"),
+    HONO_USERNAME("datastore.hono.connection.username"),
     /**
-     * Connection url
+     * Hono connection configuration - password
      */
-    CONNECTION_PORT("activemq_datastore.connection.port"),
+    HONO_PASSWORD("datastore.hono.connection.password"),
     /**
-     * Connection username
+     * Hono connection configuration - truststore file
      */
-    CONNECTION_USERNAME("activemq_datastore.connection.username"),
+    HONO_TRUSTSTORE_FILE("datastore.hono.connection.truststore_file"),
     /**
-     * Connection password
+     * Hono connection configuration - tenant id (comma separated tenant id list)
      */
-    CONNECTION_PASSWORD("activemq_datastore.connection.password"),
+    HONO_TENANT_ID("datastore.hono.connection.tenant_id"),
     /**
-     * Telemetry message client id
+     * Hono connection configuration - client id
      */
-    TELEMETRY_CLIENT_ID("activemq_datastore.telemetry.client_id"),
+    HONO_CLIENT_ID("datastore.hono.connection.client_id"),
     /**
-     * Telemetry message destination to subscribe
+     * Hono connection configuration - host
      */
-    TELEMETRY_DESTINATION("activemq_datastore.telemetry.destination"),
+    HONO_HOST("datastore.hono.connection.host"),
     /**
-     * Consumer prefetch messages
+     * Hono connection configuration - port
      */
-    TELEMETRY_PREFETCH_MESSAGES("activemq_datastore.telemetry.prefetch_messages"),
+    HONO_PORT("datastore.hono.connection.port"),
     /**
-     * Message error connection client id
+     * Subscription message type
      */
-    ERROR_CLIENT_ID("activemq_datastore.error.client_id"),
+    HONO_MESSAGE_TYPE("datastore.hono.message_type"),
     /**
-     * Error message destination to subscribe/produce
+     * Maximum reconnection attempts (-1 means no limit)
      */
-    ERROR_DESTINATION("activemq_datastore.error.destination"),
+    HONO_PROTON_MAX_RECONNECT_ATTEMPTS("datastore.hono.connection.proton.max_reconnect_attempts"),
     /**
-     * Consumer prefetch messages
+     * Wait between reconnection attempts
      */
-    ERROR_PREFETCH_MESSAGES("activemq_datastore.error.prefetch_messages"),
+    HONO_PROTON_WAIT_BETWEEN_RECONNECT("datastore.hono.connection.proton.wait_between_reconnection"),
     /**
-     * Wait between reconnection attempts (milliseconds)
+     * Connection timeout (in seconds)
      */
-    WAIT_BETWEEN_RECONNECT("activemq_datastore.connection.wait_between_reconnect"),
+    HONO_PROTON_CONNECT_TIMEOUT("datastore.hono.connection.proton.connect_timeout"),
     /**
-     * Connection timeout (milliseconds)
+     * idle timeout (in milliseconds)
      */
-    CONNECT_TIMEOUT("activemq_datastore.connection.connect_timeout"),
-    /**
-     * Message prefetch
-     */
-    PREFETCH_MESSAGES("activemq_datastore.prefetch_messages"),
-    /**
-     * Idle timeout (seconds)
-     */
-    IDLE_TIMEOUT("activemq_datastore.connection.idle_timeout"),
-    /**
-     * Maximum reconnection attempt (without any success between them) before exiting JVM (negative numbers means no exit)
-     */
-    MAX_RECONNECTION_ATTEMPTS("activemq_datastore.maximum_reconnection_attempt"),
+    HONO_PROTON_IDLE_TIMEOUT("datastore.hono.connection.proton.idle_timeout"),
     /**
      * Exiting code when maximum reconnection attempt is reached
      */
-    EXIT_CODE("activemq_datastore.exit_code");
+    HONO_EXIT_CODE("datastore.hono.connection.exit_code");
 
     private String key;
 

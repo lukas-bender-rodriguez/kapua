@@ -9,7 +9,7 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.consumer.activemq.datastore;
+package org.eclipse.kapua.consumer.hono.datastore;
 
 import java.util.ArrayList;
 import java.util.List;

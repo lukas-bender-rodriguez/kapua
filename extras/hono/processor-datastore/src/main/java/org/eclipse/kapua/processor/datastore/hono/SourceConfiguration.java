@@ -16,41 +16,16 @@ import org.eclipse.kapua.broker.client.hono.ClientOptions.HonoClientOptions;
 import org.eclipse.kapua.processor.datastore.hono.settings.HonoDatastoreSettings;
 import org.eclipse.kapua.processor.datastore.hono.settings.HonoDatastoreSettingsKey;
 
-import io.vertx.proton.ProtonQoS;
-
 public class SourceConfiguration {
 
-    private boolean autoAccept;
-
-    private String qos;
     private String clientId;
-    private String destination;
-    private int prefetchMessages;
     private String tenantId;
     private String truststoreFile;
 
     public SourceConfiguration() {
-        clientId = HonoDatastoreSettings.getInstance().getString(HonoDatastoreSettingsKey.TELEMETRY_CLIENT_ID);
-        destination = HonoDatastoreSettings.getInstance().getString(HonoDatastoreSettingsKey.TELEMETRY_DESTINATION);
-        prefetchMessages = HonoDatastoreSettings.getInstance().getInt(HonoDatastoreSettingsKey.TELEMETRY_PREFETCH_MESSAGES);
-        autoAccept = false;
-        qos = ProtonQoS.AT_LEAST_ONCE.name();
-    }
-
-    public boolean isAutoAccept() {
-        return autoAccept;
-    }
-
-    public void setAutoAccept(boolean autoAccept) {
-        this.autoAccept = autoAccept;
-    }
-
-    public String getQos() {
-        return qos;
-    }
-
-    public void setQos(String qos) {
-        this.qos = qos;
+        clientId = HonoDatastoreSettings.getInstance().getString(HonoDatastoreSettingsKey.HONO_CLIENT_ID);
+        tenantId = HonoDatastoreSettings.getInstance().getString(HonoDatastoreSettingsKey.HONO_TENANT_ID);
+        truststoreFile = HonoDatastoreSettings.getInstance().getString(HonoDatastoreSettingsKey.HONO_TRUSTSTORE_FILE);
     }
 
     public String getClientId() {
@@ -59,22 +34,6 @@ public class SourceConfiguration {
 
     public void setClientId(String clientId) {
         this.clientId = clientId;
-    }
-
-    public String getDestination() {
-        return destination;
-    }
-
-    public void setDestination(String destination) {
-        this.destination = destination;
-    }
-
-    public int getPrefetchMessages() {
-        return prefetchMessages;
-    }
-
-    public void setPrefetchMessages(int prefetchMessages) {
-        this.prefetchMessages = prefetchMessages;
     }
 
     public void setTenantId(String tenantId) {
@@ -99,9 +58,10 @@ public class SourceConfiguration {
                 connectionOptions.getPort(),
                 connectionOptions.getUsername(),
                 connectionOptions.getPassword());
+        options.put(HonoClientOptions.CLIENT_ID, getClientId());
         options.put(HonoClientOptions.TENANT_ID, getTenantId());
+        options.put(HonoClientOptions.MESSAGE_TYPE, connectionOptions.getTransportMessageType());
         options.put(HonoClientOptions.TRUSTSTORE_FILE,getTruststoreFile());
-        options.put(HonoClientOptions.DESTINATION, getDestination());
         options.put(HonoClientOptions.CONNECT_TIMEOUT, connectionOptions.getConnectTimeout());
         options.put(HonoClientOptions.MAXIMUM_RECONNECTION_ATTEMPTS, connectionOptions.getMaxReconnectAttempts());
         options.put(HonoClientOptions.IDLE_TIMEOUT, connectionOptions.getIdelTimeout());
