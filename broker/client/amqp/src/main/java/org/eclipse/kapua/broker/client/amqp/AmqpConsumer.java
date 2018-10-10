@@ -24,6 +24,9 @@ import io.vertx.proton.ProtonReceiver;
 public class AmqpConsumer extends AbstractAmqpClient {
 
     private static final Logger logger = LoggerFactory.getLogger(AmqpConsumer.class);
+
+    private final static Integer PREFETCH = new Integer(10);
+
     private ProtonMessageHandler messageHandler;
     private ProtonReceiver receiver;
 
@@ -47,11 +50,13 @@ public class AmqpConsumer extends AbstractAmqpClient {
             else {
                 // The client ID is set implicitly into the queue subscribed
                 receiver = connection.createReceiver(destination);
-                receiver.setAutoAccept((boolean)clientOptions.get(AmqpClientOptions.AUTO_ACCEPT));
-                receiver.setQoS((ProtonQoS)clientOptions.get(AmqpClientOptions.QOS));
-                Integer prefetch = clientOptions.getInt(AmqpClientOptions.PREFETCH_MESSAGES, 1);
-                receiver.setPrefetch(prefetch);
-                logger.info("Setting prefetch to {}", prefetch);
+
+                //default values not changeable by config
+                receiver.setAutoAccept(false);
+                receiver.setQoS(ProtonQoS.AT_LEAST_ONCE);
+                receiver.setPrefetch(PREFETCH);
+
+                logger.info("Setting prefetch to {}", PREFETCH);
                 receiver.handler(messageHandler);
                 receiver.openHandler(ar -> {
                     if(ar.succeeded()) {

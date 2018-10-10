@@ -112,7 +112,7 @@ public class AmqpActiveMQSource extends AbstractAmqpSource<Message> {
         // extract original MQTT topic
         //TODO restore it once the ActiveMQ issue will be fixed
         //String mqttTopic = message.getProperties().getTo(); // topic://VirtualTopic.kapua-sys.02:42:AC:11:00:02.heater.data
-        String mqttTopic = (String)message.getApplicationProperties().getValue().get("originalTopic");
+        String mqttTopic = (String)message.getApplicationProperties().getValue().get(Properties.MESSAGE_ORIGINAL_DESTINATION);
         mqttTopic = mqttTopic.replace(".", "/");
         // process prefix and extract message type
         // FIXME: pluggable message types and dialects

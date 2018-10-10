@@ -117,7 +117,7 @@ public class AmqpTransportActiveMQSource extends AbstractAmqpSource<byte[]> {
         //String mqttTopic = message.getProperties().getTo(); // topic://VirtualTopic.kapua-sys.02:42:AC:11:00:02.heater.data
         String mqttTopic = null;
         if (message.getApplicationProperties()!=null) {
-            mqttTopic = (String)message.getApplicationProperties().getValue().get("originalTopic");
+            mqttTopic = (String)message.getApplicationProperties().getValue().get(Properties.MESSAGE_ORIGINAL_DESTINATION);
             mqttTopic = mqttTopic.replace(".", "/");
         }
         else {

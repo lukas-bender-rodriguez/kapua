@@ -49,7 +49,7 @@
         </dependency>
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-device-registry-api</artifactId>
+            <artifactId>kapua-device-registry-internal</artifactId>
         </dependency>
 
     </dependencies>

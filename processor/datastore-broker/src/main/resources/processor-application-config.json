@@ -24,37 +24,37 @@
                 "defaultAddress": "kapua.requests"
             },
             "messageSource": {
-            	"amqp": {
-					"host": "127.0.0.1",
-					"port": 5672,
-					"username": "username",
-					"password": "password",
-					"waitBetweenReconnect": 1000,
-					"connectTimeout": 5000,
-					"idleTimeout": 300,
-					"maximumReconnectionAttempt": 10,
-					"exitCode": -1,
-					"prefetchMessages": 10,
-					"clientId": "activemq-datastore",
-					"destination": "queue://Consumer.activemq-datastore.VirtualTopic.>"
-				}
-			},
-			"errorTarget": {
-				"amqp": {
-					"host": "127.0.0.1",
-					"port": 5672,
-					"username": "username",
-					"password": "password",
-					"waitBetweenReconnect": 1000,
-					"connectTimeout": 5000,
-					"idleTimeout": 300,
-					"maximumReconnectionAttempt": 10,
-					"exitCode": -1,
-					"prefetchMessages": 10,
-					"clientId": "activemq-datastore-error",
-					"destination": "queue://datastore-error"
-				}
-			}
+                "amqp": {
+                    "host": "127.0.0.1",
+                    "port": 5672,
+                    "username": "username",
+                    "password": "password",
+                    "waitBetweenReconnect": 1000,
+                    "connectTimeout": 5000,
+                    "idleTimeout": 300,
+                    "maximumReconnectionAttempt": 10,
+                    "exitCode": -1,
+                    "prefetchMessages": 10,
+                    "clientId": "activemq-datastore",
+                    "destination": "queue://Consumer.activemq-datastore.VirtualTopic.>"
+                }
+            },
+            "errorTarget": {
+                "amqp": {
+                    "host": "127.0.0.1",
+                    "port": 5672,
+                    "username": "username",
+                    "password": "password",
+                    "waitBetweenReconnect": 1000,
+                    "connectTimeout": 5000,
+                    "idleTimeout": 300,
+                    "maximumReconnectionAttempt": 10,
+                    "exitCode": -1,
+                    "prefetchMessages": 10,
+                    "clientId": "activemq-datastore-error",
+                    "destination": "queue://datastore-error"
+                }
+            }
         }
     }
 }
