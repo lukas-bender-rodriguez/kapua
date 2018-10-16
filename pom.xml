@@ -987,6 +987,11 @@
             </dependency>
             <dependency>
                 <groupId>org.eclipse.kapua</groupId>
+                <artifactId>kapua-connector-lifecycle-hono</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.kapua</groupId>
                 <artifactId>kapua-connector-kura</artifactId>
                 <version>${project.version}</version>
             </dependency>
@@ -997,12 +1002,12 @@
             </dependency>
             <dependency>
                 <groupId>org.eclipse.kapua</groupId>
-                <artifactId>kapua-datastore-connector</artifactId>
+                <artifactId>kapua-connector-datastore</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.eclipse.kapua</groupId>
-                <artifactId>kapua-lifecycle-connector</artifactId>
+                <artifactId>kapua-connector-lifecycle</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>

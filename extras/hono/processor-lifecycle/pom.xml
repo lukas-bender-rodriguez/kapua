@@ -71,7 +71,7 @@
         </dependency>
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-lifecycle-connector</artifactId>
+            <artifactId>kapua-connector-lifecycle-hono</artifactId>
         </dependency>
                 <dependency>
             <groupId>org.eclipse.kapua</groupId>

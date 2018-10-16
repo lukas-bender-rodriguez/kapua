@@ -26,6 +26,10 @@
 
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-connector-datastore</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-processor-commons</artifactId>
         </dependency>
         <dependency>
@@ -119,10 +123,6 @@
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-device-call-kura</artifactId>
             <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-datastore-connector</artifactId>
         </dependency>
     </dependencies>
     <build>

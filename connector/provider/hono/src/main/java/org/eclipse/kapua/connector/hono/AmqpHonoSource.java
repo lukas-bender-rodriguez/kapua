@@ -58,7 +58,7 @@ public class AmqpHonoSource extends AbstractAmqpSource<byte[]> {
     private final static String TENANT_ID = "tenant_id";
 
     //TODO get from configuration
-    private static String DESTINATION_PATH_SEPARATOR = "/";
+    private static String destinationPathSeparator = "/";
 
     private HonoClient honoClient;
 
@@ -222,7 +222,7 @@ public class AmqpHonoSource extends AbstractAmqpSource<byte[]> {
         if (message.getApplicationProperties()!=null && message.getApplicationProperties().getValue()!=null) {
             String originalAddress = (String)message.getApplicationProperties().getValue().get(ORIGINAL_ADDRESS);
             if (originalAddress!=null) {
-                return originalAddress.replace(".", DESTINATION_PATH_SEPARATOR);
+                return originalAddress.replace(".", destinationPathSeparator);
             }
         }
         return null;
@@ -283,7 +283,7 @@ public class AmqpHonoSource extends AbstractAmqpSource<byte[]> {
         if (tenantId == null && message.getProperties()!=null) {
             String originalAddress = message.getProperties().getTo();
             if (originalAddress != null) {
-                String originalAddressSplit[] = originalAddress.split(DESTINATION_PATH_SEPARATOR);
+                String originalAddressSplit[] = originalAddress.split(destinationPathSeparator);
                 if (originalAddressSplit != null && originalAddressSplit.length>2) {
                     tenantId = originalAddressSplit[1];
                 }

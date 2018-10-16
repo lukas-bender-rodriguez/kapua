@@ -85,7 +85,7 @@
         </dependency>
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-datastore-connector</artifactId>
+            <artifactId>kapua-connector-datastore</artifactId>
         </dependency>
 
         <!-- processors -->
