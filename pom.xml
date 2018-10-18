@@ -982,6 +982,16 @@
             </dependency>
             <dependency>
                 <groupId>org.eclipse.kapua</groupId>
+                <artifactId>kapua-processor-datastore-hono</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.kapua</groupId>
+                <artifactId>kapua-processor-lifecycle-hono</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.kapua</groupId>
                 <artifactId>kapua-connector-hono</artifactId>
                 <version>${project.version}</version>
             </dependency>
@@ -1031,6 +1041,16 @@
                 <version>${project.version}</version>
             </dependency>
 
+            <dependency>
+                <groupId>org.eclipse.kapua</groupId>
+                <artifactId>kapua-assembly-extras</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.kapua</groupId>
+                <artifactId>kapua-assembly-extras-hono</artifactId>
+                <version>${project.version}</version>
+            </dependency>
             <!-- External dependencies -->
             <dependency>
                 <groupId>commons-beanutils</groupId>
