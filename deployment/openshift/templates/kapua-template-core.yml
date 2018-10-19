@@ -229,13 +229,13 @@ objects:
             periodSeconds: 5
             timeoutSeconds: 1
             tcpSocket:
-              port: 5672
+              port: 5682
           livenessProbe:
             initialDelaySeconds: 20
             periodSeconds: 9
             timeoutSeconds: 1
             tcpSocket:
-              port: 5672
+              port: 5682
           volumeMounts:
           - mountPath: /opt/artemis/data
             name: events-broker-volume-1
@@ -327,9 +327,9 @@ objects:
       app: events-broker
   spec:
     ports:
-    - port: 5672
+    - port: 5682
       protocol: TCP
-      targetPort: 5672
+      targetPort: 5682
     selector:
       app: events-broker
       deploymentconfig: events-broker
