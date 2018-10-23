@@ -88,7 +88,7 @@ public abstract class AbstractAmqpClient {
         this.connected = connected;
     }
 
-    protected abstract void registerAction(ProtonConnection connection);
+    protected abstract void registerAction();
 
     public void disconnect(Future<Void> stopFuture) {
         disconnecting = true;
@@ -122,7 +122,7 @@ public abstract class AbstractAmqpClient {
                         connection.openHandler(event -> {
                             if (event.succeeded()) {
                                 connection = event.result();
-                                registerAction(connection);
+                                registerAction();
                             }
                             else {
                                 notifyConnectionLost();

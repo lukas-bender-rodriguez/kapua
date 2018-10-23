@@ -18,7 +18,6 @@ import org.slf4j.LoggerFactory;
 
 import io.vertx.core.Handler;
 import io.vertx.core.Vertx;
-import io.vertx.proton.ProtonConnection;
 import io.vertx.proton.ProtonDelivery;
 import io.vertx.proton.ProtonLinkOptions;
 import io.vertx.proton.ProtonSender;
@@ -34,7 +33,7 @@ public class AmqpSender extends AbstractAmqpClient {
         destination = clientOptions.getString(AmqpClientOptions.DESTINATION);
     }
 
-    protected void registerAction(ProtonConnection connection) {
+    protected void registerAction() {
         try {
             logger.info("Register sender for destination {}... (client: {})", destination, client);
             if (connection.isDisconnected()) {

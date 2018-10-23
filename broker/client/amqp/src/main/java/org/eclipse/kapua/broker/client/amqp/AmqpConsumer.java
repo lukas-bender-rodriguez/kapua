@@ -16,7 +16,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.vertx.core.Vertx;
-import io.vertx.proton.ProtonConnection;
 import io.vertx.proton.ProtonMessageHandler;
 import io.vertx.proton.ProtonQoS;
 import io.vertx.proton.ProtonReceiver;
@@ -38,7 +37,7 @@ public class AmqpConsumer extends AbstractAmqpClient {
         this.messageHandler = messageHandler;
     }
 
-    protected void registerAction(ProtonConnection connection) {
+    protected void registerAction() {
         try {
             String destination = clientOptions.getString(AmqpClientOptions.DESTINATION);
             logger.info("Register consumer for destination {}... (client: {})", destination, client);
