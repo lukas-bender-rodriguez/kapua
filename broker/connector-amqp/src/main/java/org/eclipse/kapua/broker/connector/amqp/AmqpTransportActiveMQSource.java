@@ -16,7 +16,7 @@ import java.util.Map;
 
 import org.apache.qpid.proton.message.Message;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.broker.client.amqp.AmqpConsumer;
+import org.eclipse.kapua.broker.client.amqp.AmqpReceiver;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.connector.AbstractAmqpSource;
 import org.eclipse.kapua.connector.MessageContext;
@@ -44,13 +44,13 @@ public class AmqpTransportActiveMQSource extends AbstractAmqpSource<byte[]> {
     private final static String TOPIC_SEPARATOR = "/";
     private final static String CLASSIFIER_TOPIC_PREFIX = SystemSetting.getInstance().getMessageClassifier() + TOPIC_SEPARATOR;
 
-    private AmqpConsumer consumer;
+    private AmqpReceiver consumer;
 
-    public static AmqpTransportActiveMQSource create(Vertx vertx, AmqpConsumer consumer) {
+    public static AmqpTransportActiveMQSource create(Vertx vertx, AmqpReceiver consumer) {
         return new AmqpTransportActiveMQSource(vertx, consumer);
     }
 
-    private AmqpTransportActiveMQSource(Vertx vertx, AmqpConsumer consumer) {
+    private AmqpTransportActiveMQSource(Vertx vertx, AmqpReceiver consumer) {
         super(vertx);
         this.consumer = consumer;
         this.consumer.messageHandler(this::handleMessage);

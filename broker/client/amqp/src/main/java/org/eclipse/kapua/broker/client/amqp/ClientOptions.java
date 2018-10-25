@@ -27,7 +27,8 @@ public class ClientOptions {
         WAIT_BETWEEN_RECONNECT,
         CONNECT_TIMEOUT,
         IDLE_TIMEOUT,
-        EXIT_CODE
+        EXIT_CODE,
+        DESTINATION_TRANSLATOR
     }
 
     private Map<String, Object> options;
