@@ -88,6 +88,7 @@ public abstract class AbstractAmqpClient {
         else {
             waitBetweenReconnect = new Integer(1000);
         }
+        options.setMaxFrameSize(1024*1024);
         logger.info("Created client {}", client);
     }
 
@@ -210,10 +211,11 @@ public abstract class AbstractAmqpClient {
 
     public void disconnect(Future<Void> stopFuture) {
         disconnecting = true;
-        logger.info("Closing connection {} for client {}...", connection, client);
+        logger.info("Closing connection {} for client {}", connection, client);
+        clean();
         if (connection != null) {
             connection.disconnect();
-            logger.info("Closing connection {} for client {}... DONE", connection, client);
+            logger.info("Closing connection {} for client {} DONE", connection, client);
             connection = null;
         }
         //in any case complete with a positive result the future
