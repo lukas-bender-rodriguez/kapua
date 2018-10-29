@@ -27,7 +27,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.vertx.proton.ProtonDelivery;
-import io.vertx.proton.ProtonHelper;
 import io.vertx.proton.ProtonMessageHandler;
 
 /**
@@ -125,9 +124,6 @@ public class AmqpClientConsumerHandler implements ProtonMessageHandler {
         }
         catch (Exception e) {
             logger.error("Error handling message {}", message, e);
-        }
-        finally {
-            ProtonHelper.accepted(delivery, true);
         }
     }
 

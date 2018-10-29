@@ -11,6 +11,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.transport.amqp;
 
+import java.util.concurrent.TimeUnit;
+
 import org.apache.qpid.proton.Proton;
 import org.apache.qpid.proton.amqp.Binary;
 import org.apache.qpid.proton.amqp.messaging.Data;
@@ -101,18 +103,17 @@ public class AmqpClient {
                 logger.error("Cannot connect client {} to {} with username {}", options.getEndpointURI().toString(), options.getClientId(), options.getUsername());
             }
         });
-        client.connect(connectFuture);
         //since the AMQP client connect is asynchronous and Apache commons pool will test the borrowed client soon as it will be returned from this method we need to wait for the connection to be completed
         //otherwise the result will be an error since the borrowed client will be invalid (see org.eclipse.kapua.broker.client.amqp.AmqpClient for detail)
-        long currentTime = System.currentTimeMillis();
-        synchronized (client) {
-            try {
-                client.wait(AmqpClientSetting.getInstance().getInt(AmqpClientSettingKeys.TRANSPORT_CONNECT_TIMEOUT));
-            } catch (InterruptedException e) {
-                logger.error("Interrupted: {}", e.getMessage(), e);
-            }
-            logger.info("Acquired connected client after {}ms", (System.currentTimeMillis() - currentTime));
+        long startTime = System.currentTimeMillis();
+        client.connect(connectFuture);
+        try {
+            client.connectionTimeout.await(20000, TimeUnit.MILLISECONDS);
+        } catch (InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
         }
+        logger.info("Acquired connected client after {} - {}ms - {}", System.currentTimeMillis(), (System.currentTimeMillis() - startTime), client.isConnected());
     }
 
     /**
