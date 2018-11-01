@@ -39,7 +39,7 @@ jobs:
     - stage: build
       script:
         - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-        - $M2_HOME/bin/mvn clean install -Pdocker,dev -DskipTests
+        - $M2_HOME/bin/mvn clean install -Pdocker -DskipTests
         - $M2_HOME/bin/mvn -Pdocker deploy -Ddocker.push.registry=registry.hub.docker.com -Ddocker.account=lukasbender
     - stage: test
       script:
