@@ -6,7 +6,7 @@ jdk:
 sudo: false
 dist: trusty
 
-# The cache is stored per-branch
+# The cache is stored per-branch.
 
 cache:
   directories:
