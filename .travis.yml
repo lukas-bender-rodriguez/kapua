@@ -41,7 +41,7 @@ jobs:
         - $M2_HOME/bin/mvn clean install -Pdocker -DskipTests
         - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
         - docker tag kapua/kapua-broker lukasbender/kapua-broker
-        - docker push lukasbender/kapua/kapua-broker
+        - docker push lukasbender/kapua-broker
       #  - $M2_HOME/bin/mvn -Pdocker deploy -Ddocker.push.registry=registry.hub.docker.com -Ddocker.account=lukasbender
     - stage: test
       script:
