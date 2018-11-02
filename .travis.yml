@@ -38,7 +38,7 @@ jobs:
         - $M2_HOME/bin/mvn -B -Dgwt.compiler.localWorkers=2 -DskipTests install
     - stage: build
       script:
-        - $M2_HOME/bin/mvn clean install,console -Pdocker -DskipTests
+        - $M2_HOME/bin/mvn clean install -Pdocker,console -DskipTests
         - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
         - docker image ls --all
         - docker tag kapua/kapua-broker $DOCKER_USERNAME/kapua-broker
