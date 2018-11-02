@@ -36,6 +36,7 @@
 
         <module>broker</module>
         <module>api</module>
+        <module>console</module>
     </modules>
 
     <profiles>
