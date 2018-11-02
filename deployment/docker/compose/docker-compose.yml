@@ -18,11 +18,11 @@ services:
       - transport.ping_schedule=-1
       - transport.tcp.connect_timeout=30s
   events-broker:
-    image: lukasbenderkapua-events-broker:${IMAGE_VERSION}
+    image: lukasbender/kapua-events-broker:${IMAGE_VERSION}
     ports:
       - 5672:5672
   broker:
-    image: lukasbenderkapua-broker:${IMAGE_VERSION}
+    image: lukasbender/kapua-broker:${IMAGE_VERSION}
     ports:
       - 1883:1883
       - 8883:8883
@@ -40,7 +40,7 @@ services:
       - KAPUA_KEYSTORE
       - KAPUA_KEYSTORE_PASSWORD
   kapua-console:
-    image: lukasbenderkapua-console:${IMAGE_VERSION}
+    image: lukasbender/kapua-console:${IMAGE_VERSION}
     ports:
       - 8082:8080
     depends_on:
@@ -61,7 +61,7 @@ services:
       - KAPUA_KEYSTORE
       - KAPUA_KEYSTORE_PASSWORD
   kapua-api:
-    image: lukasbenderkapua-api:${IMAGE_VERSION}
+    image: lukasbender/kapua-api:${IMAGE_VERSION}
     ports:
       - 8081:8080
     depends_on:
