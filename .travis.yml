@@ -41,19 +41,19 @@ jobs:
         - $M2_HOME/bin/mvn clean install -Pdocker,console -DskipTests
         - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
         - docker image ls --all
-        - docker tag kapua/kapua-broker $DOCKER_USERNAME/kapua-broker
+        - docker tag kapua/kapua-broker $DOCKER_USERNAME/kapua-broker:1.0.1
         - docker push $DOCKER_USERNAME/kapua-broker
-        - docker tag kapua/kapua-sql $DOCKER_USERNAME/kapua-sql
+        - docker tag kapua/kapua-sql $DOCKER_USERNAME/kapua-sql:1.0.1
         - docker push $DOCKER_USERNAME/kapua-sql
-        - docker tag kapua/kapua-console $DOCKER_USERNAME/kapua-console
+        - docker tag kapua/kapua-console $DOCKER_USERNAME/kapua-console:1.0.1
         - docker push $DOCKER_USERNAME/kapua-console
-        - docker tag kapua/kapua-api $DOCKER_USERNAME/kapua-api
+        - docker tag kapua/kapua-api $DOCKER_USERNAME/kapua-api:1.0.1
         - docker push $DOCKER_USERNAME/kapua-api
-        - docker tag kapua/jetty-base $DOCKER_USERNAME/jetty-base
+        - docker tag kapua/jetty-base $DOCKER_USERNAME/jetty-base:1.0.1
         - docker push $DOCKER_USERNAME/jetty-base
-        - docker tag kapua/kapua-events-broker $DOCKER_USERNAME/kapua-events-broker
+        - docker tag kapua/kapua-events-broker $DOCKER_USERNAME/kapua-events-broker:1.0.1
         - docker push $DOCKER_USERNAME/kapua-events-broker
-        - docker tag kapua/java-base $DOCKER_USERNAME/java-base
+        - docker tag kapua/java-base $DOCKER_USERNAME/java-base:1.0.1
         - docker push $DOCKER_USERNAME/java-base
       #  - $M2_HOME/bin/mvn -Pdocker deploy -Ddocker.push.registry=registry.hub.docker.com -Ddocker.account=lukasbender
     - stage: test
