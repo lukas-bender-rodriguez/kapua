@@ -18,7 +18,7 @@
     <parent>
         <groupId>org.eclipse.kapua</groupId>
         <artifactId>kapua-console</artifactId>
-        <version>1.0.1-SNAPSHOT</version>
+        <version>1.0.2-SNAPSHOT</version>
     </parent>
 
     <artifactId>kapua-console-web</artifactId>
@@ -301,11 +301,6 @@
                                 </includes>
                             </resource>
                         </webResources>
-                        <!-- exclude slf4j-api and logback as the web container has to provide this -->
-                        <packagingExcludes>
-                            WEB-INF/lib/slf4j-api-*.jar,
-                            WEB-INF/lib/logback*.jar
-                        </packagingExcludes>
                     </configuration>
                 </plugin>
             </plugins>

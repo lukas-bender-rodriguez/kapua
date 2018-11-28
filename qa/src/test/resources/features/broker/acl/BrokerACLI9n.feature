@@ -40,14 +40,14 @@ Feature: Broker ACL tests
   ACL_DATA_ACC_CLI = {0}.{1}.>
   ACL_CTRL_ACC_NOTIFY = $EDC.{0}.*.*.NOTIFY.{1}.>
 
+  @StartDatastore
+  Scenario: Start datastore for all scenarios
+
   @StartEventBroker
   Scenario: Start event broker for all scenarios
 
   @StartBroker
   Scenario: Start broker for all scenarios
-
-  @StartDatastore
-  Scenario: Start datastore for all scenarios
 
 #
 #  Admin
@@ -393,8 +393,8 @@ Feature: Broker ACL tests
     Given I expect the exception "MqttException" with the text "*"
     When broker with clientId "client-1" and user "luise" and password "kapua-password" is listening on topic "$EDC/acme/foo/bar/NOTIFY/client-1"
 #    Then An exception was thrown
-#      And clients are disconnected
-#      And Mqtt Device is stoped
+      And clients are disconnected
+      And Mqtt Device is stoped
 #
 # Data view
 #
@@ -605,8 +605,8 @@ Feature: Broker ACL tests
   @StopBroker
   Scenario: Stop broker after all scenarios
 
-  @StopDatastore
-  Scenario: Stop datastore after all scenarios
-
   @StopEventBroker
   Scenario: Stop event broker for all scenarios
+
+  @StopDatastore
+  Scenario: Stop datastore after all scenarios
