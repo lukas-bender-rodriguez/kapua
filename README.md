@@ -2,8 +2,7 @@
 
 # Eclipse Kapua&trade;
 
-[![Build Status](https://travis-ci.org/eclipse/kapua.svg?branch=develop)](https://travis-ci.org/eclipse/kapua/branches)
-[![Hudson](https://img.shields.io/jenkins/s/https/hudson.eclipse.org/kapua/job/Develop.svg)](https://hudson.eclipse.org/kapua/job/develop)
+[![Build Status](https://travis-ci.org/eclipse/kapua.svg?branch=develop)](https://travis-ci.org/lukas-bender-rodriguez/kapua)
 
 [Eclipse Kapua&trade;](http://eclipse.org/kapua) is a modular platform providing the services required to manage IoT gateways and smart edge devices. Kapua provides a core integration framework and an initial set of core IoT services including a device registry, device management services, messaging services, data management, and application enablement.
 
@@ -77,12 +76,12 @@ To stop Kapua, run
 ### Access
 
 Once the containers are running, the Kapua services can be accessed. Kapua is a multi tenant
-system. The demo installation comes with one default tenant, called _kapua-sys_, which is also the root tenant. 
+system. The demo installation comes with one default tenant, called _kapua-sys_, which is also the root tenant.
 In Eclipse Kapua a _tenant_ is commonly referred to as an _account_.
 
 #### The console
 
-The administration console is available at [http://localhost:8080/](http://localhost:8080/). 
+The administration console is available at [http://localhost:8080/](http://localhost:8080/).
 Copy paste the URL above to a Web browser, as the login screen appears, type the following credentials:
 
 * Username: `kapua-sys`
