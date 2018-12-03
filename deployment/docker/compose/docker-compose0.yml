@@ -4,15 +4,15 @@ services:
   db:
     image: lukasbender/kapua-sql:${IMAGE_VERSION}
     ports:
-#      - 8181:8181
-#      - 3306:3306
+      - 8181:8181
+      - 3306:3306
     volumes:
       - dbdata:/var/h2/data
   es:
     image: elasticsearch:5.4.0
-#    ports:
-#      - 9200:9200
-#      - 9300:9300
+    ports:
+      - 9200:9200
+      - 9300:9300
     environment:
       - cluster.name=kapua-datastore
       - discovery.type=single-node
@@ -97,6 +97,7 @@ services:
 
 volumes:
   esdata1
+  esdatabackup
   dbdata
   events-brokerdata
   brokerdata
