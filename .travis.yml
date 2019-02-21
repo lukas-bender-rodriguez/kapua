@@ -101,7 +101,6 @@ jobs:
   - stage: test
     script:
     - $M2_HOME/bin/mvn -B -DskipTests install javadoc:jar
->>>>>>> release-1.0.x
 
 # The following upgrades Java during the build in
 # order to work around an older Java 8 compiler issue

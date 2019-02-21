@@ -2,7 +2,7 @@ version: '3.1'
 
 services:
   db:
-    image: lukasbender/kapua-sql:${IMAGE_VERSION}
+    image: ${DOCKER_REPO}/kapua-sql:${IMAGE_VERSION}
     ports:
       - 8181:8181
       - 3306:3306
@@ -22,7 +22,7 @@ services:
     volumes:
       - esdata1:/usr/share/elasticsearch/data
   events-broker:
-    image: lukasbender/kapua-events-broker:${IMAGE_VERSION}
+    image: ${DOCKER_REPO}/kapua-events-broker:${IMAGE_VERSION}
     ports:
       - 5672:5672 # what is the purpose of this port
     environment:
@@ -30,7 +30,7 @@ services:
     volumes:
       - events-brokerdata:/opt/artemis/data
   broker:
-    image: lukasbender/kapua-broker:${IMAGE_VERSION}
+    image: ${DOCKER_REPO}/kapua-broker:${IMAGE_VERSION}
     ports:
       - 1883:1883
       - 8883:8883
@@ -51,7 +51,7 @@ services:
     volumes:
       - brokerdata:/maven/data
   kapua-console:
-    image: lukasbender/kapua-console:${IMAGE_VERSION}
+    image: ${DOCKER_REPO}/kapua-console:${IMAGE_VERSION}
 #    ports:
 #      - 8082:8080
     depends_on:
@@ -61,10 +61,10 @@ services:
       - events-broker
     environment:
       - transport.credential.password
-      - VIRTUAL_HOST=kapua.bender.beegy-dev.cc
+      - VIRTUAL_HOST=${HOST_URL}
       - VIRTUAL_PORT=8080
-      - LETSENCRYPT_HOST=kapua.bender.beegy-dev.cc
-      - LETSENCRYPT_EMAIL=lukas.exel@beegy.com
+      - LETSENCRYPT_HOST=${HOST_URL}
+      - LETSENCRYPT_EMAIL=${MAINTAINER_MAIL}
       - KAPUA_DISABLE_SSL
       - KAPUA_CA
       - KAPUA_CRT
@@ -73,7 +73,7 @@ services:
       - KAPUA_KEYSTORE
       - KAPUA_KEYSTORE_PASSWORD
   kapua-api:
-    image: lukasbender/kapua-api:${IMAGE_VERSION}
+    image: ${DOCKER_REPO}/kapua-api:${IMAGE_VERSION}
 #    ports:
 #      - 8081:8080
     depends_on:
@@ -83,10 +83,10 @@ services:
       - events-broker
     environment:
       - transport.credential.password
-      - VIRTUAL_HOST=kapua-api.bender.beegy-dev.cc
+      - VIRTUAL_HOST=api.${HOST_URL}
       - VIRTUAL_PORT=8080
-      - LETSENCRYPT_HOST=kapua-api.bender.beegy-dev.cc
-      - LETSENCRYPT_EMAIL=lukas.exel@beegy.com
+      - LETSENCRYPT_HOST=api.${HOST_URL}
+      - LETSENCRYPT_EMAIL=${MAINTAINER_MAIL}
       - KAPUA_DISABLE_SSL
       - KAPUA_CA
       - KAPUA_CRT
