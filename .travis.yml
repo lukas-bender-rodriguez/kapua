@@ -44,20 +44,20 @@ jobs:
       - $M2_HOME/bin/mvn clean install -Pdocker,console -DskipTests
       - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
       - docker image ls --all
-      - docker tag kapua/kapua-broker $DOCKER_USERNAME/kapua-broker:$IMAGE_TAG
-      - docker push $DOCKER_USERNAME/kapua-broker
+      - docker tag kapua/kapua-broker $DOCKER_REPO/kapua-broker:$IMAGE_TAG
+      - docker push $DOCKER_REPO/kapua-broker
       - docker tag kapua/kapua-sql $DOCKER_USERNAME/kapua-sql:$IMAGE_TAG
-      - docker push $DOCKER_USERNAME/kapua-sql
+      - docker push $DOCKER_REPO/kapua-sql
       - docker tag kapua/kapua-console $DOCKER_USERNAME/kapua-console:$IMAGE_TAG
-      - docker push $DOCKER_USERNAME/kapua-console
+      - docker push $DOCKER_REPO/kapua-console
       - docker tag kapua/kapua-api $DOCKER_USERNAME/kapua-api:$IMAGE_TAG
-      - docker push $DOCKER_USERNAME/kapua-api
+      - docker push $DOCKER_REPO/kapua-api
       - docker tag kapua/jetty-base $DOCKER_USERNAME/jetty-base:$IMAGE_TAG
-      - docker push $DOCKER_USERNAME/jetty-base
+      - docker push $DOCKER_REPO/jetty-base
       - docker tag kapua/kapua-events-broker $DOCKER_USERNAME/kapua-events-broker:$IMAGE_TAG
-      - docker push $DOCKER_USERNAME/kapua-events-broker
+      - docker push $DOCKER_REPO/kapua-events-broker
       - docker tag kapua/java-base $DOCKER_USERNAME/java-base:$IMAGE_TAG
-      - docker push $DOCKER_USERNAME/java-base
+      - docker push $DOCKER_REPO/java-base
   - stage: test
     script:
     - ./travis.sh $M2_HOME/bin/mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dcucumber.options="--tags @default" verify
