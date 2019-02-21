@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -81,6 +81,9 @@ public class KapuaExceptionHandler {
         } else if (t instanceof KapuaException && ((KapuaException) t).getCode().equals(KapuaErrorCodes.INTERNAL_ERROR)) {
             logger.error("internal service error", t);
             throw new GwtKapuaException(GwtKapuaErrorCode.INTERNAL_ERROR, t, t.getLocalizedMessage());
+        } else if ( t instanceof KapuaException && ((KapuaException) t).getCode().name().equals(KapuaErrorCodes.END_BEFORE_START_TIME_ERROR.name())) {
+            logger.error("End before start time error");
+            throw new GwtKapuaException(GwtKapuaErrorCode.END_BEFORE_START_TIME_ERROR, t, t.getLocalizedMessage());
         } else if(t instanceof KapuaException && ((KapuaException) t).getCode().name().equals(KapuaErrorCodes.PARENT_LIMIT_EXCEEDED_IN_CONFIG.name())) {
             logger.warn("Child accounts limitation error", t);
             throw new GwtKapuaException(GwtKapuaErrorCode.PARENT_LIMIT_EXCEEDED_IN_CONFIG, t, t.getLocalizedMessage());
@@ -93,6 +96,9 @@ public class KapuaExceptionHandler {
         } else if (t instanceof KapuaException && ((KapuaException) t).getCode().name().equals(KapuaErrorCodes.DUPLICATE_NAME.name())) {
             logger.warn("Entity already exist with the same name", t);
             throw new GwtKapuaException(GwtKapuaErrorCode.DUPLICATE_NAME, t, t.getLocalizedMessage());
+        } else if (t instanceof KapuaException && ((KapuaException) t).getCode().name().equals(KapuaErrorCodes.SCHEDULE_DUPLICATE_NAME.name())) {
+            logger.warn("Entity already exist with the same name", t);
+            throw new GwtKapuaException(GwtKapuaErrorCode.SCHEDULE_DUPLICATE_NAME, t, t.getLocalizedMessage());
         } else if(t instanceof KapuaConfigurationException && ((KapuaConfigurationException) t).getCode().name().equals(KapuaConfigurationErrorCodes.SELF_LIMIT_EXCEEDED_IN_CONFIG.name())) {
             logger.warn("Parent account limitation error", t);
             throw new GwtKapuaException(GwtKapuaErrorCode.SELF_LIMIT_EXCEEDED_IN_CONFIG, t, t.getLocalizedMessage());
@@ -127,10 +133,16 @@ public class KapuaExceptionHandler {
         } else if (t instanceof KapuaException && ((KapuaException) t).getCode().name().equals(KapuaErrorCodes.BUNDLE_STOP_ERROR)){
             logger.warn("Bundle could not be stoped", t);
             throw new GwtKapuaException(GwtKapuaErrorCode.BUNDLE_STOP_ERROR, t, t.getLocalizedMessage());
+        } else if (t instanceof KapuaException && ((KapuaException) t).getCode().equals(KapuaErrorCodes.PACKAGE_URI_SYNTAX_ERROR)){
+            throw new GwtKapuaException(GwtKapuaErrorCode.PACKAGE_URI_SYNTAX_ERROR, t, t.getLocalizedMessage());
         } else if (t instanceof KapuaMaxNumberOfItemsReachedException){
             throw new GwtKapuaException(GwtKapuaErrorCode.MAX_NUMBER_OF_ITEMS_REACHED, t, ((KapuaMaxNumberOfItemsReachedException) t).getArgValue());
         } else if (t instanceof DeviceMenagementException) {
             throw new GwtKapuaException(GwtKapuaErrorCode.valueOf(((DeviceMenagementException)t).getCode().name()), t, t.getLocalizedMessage());
+        } else if (t instanceof KapuaException && ((KapuaException) t).getCode() == (KapuaErrorCodes.SAME_START_AND_DATE)){
+            throw new GwtKapuaException(GwtKapuaErrorCode.SAME_START_AND_DATE, t, t.getLocalizedMessage());
+        } else if (t instanceof KapuaException && ((KapuaException) t).getCode() == (KapuaErrorCodes.RETRY_AND_CRON_BOTH_SELECTED)){
+            throw new GwtKapuaException(GwtKapuaErrorCode.RETRY_AND_CRON_BOTH_SELECTED, t, t.getLocalizedMessage());
         } else {
             // all others => log and throw internal error code
             logger.warn("RPC service non-application error", t);

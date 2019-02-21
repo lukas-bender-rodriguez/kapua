@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -30,7 +30,11 @@ public class BeforeDateValidator implements Validator {
     public String validate(Field<?> field, String s) {
         if (otherDateField.getValue() != null) {
             DateField thisDateField = (DateField) field;
-            return thisDateField.getValue().after(otherDateField.getValue()) ? null : VAL_MSGS.endsOnDateEarlierThanStartsOn();
+            if (thisDateField.getValue().after(otherDateField.getValue()) || thisDateField.getValue().equals(otherDateField.getValue())) {
+                otherDateField.clearInvalid();
+            } else {
+                return VAL_MSGS.endsOnDateEarlierThanStartsOn();
+            }
         }
         return null;
     }

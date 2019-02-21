@@ -25,6 +25,7 @@ import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeploymentPac
 import org.eclipse.kapua.app.console.module.device.shared.model.GwtDevice;
 
 import com.extjs.gxt.ui.client.data.ModelData;
+import com.extjs.gxt.ui.client.Style.SelectionMode;
 import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
 import com.extjs.gxt.ui.client.event.SelectionChangedListener;
 import com.extjs.gxt.ui.client.store.TreeStore;
@@ -50,6 +51,7 @@ public class DeviceTabPackagesInstalled extends TabItem {
     private DeviceTabPackages rootTabPanel;
     private TreeGrid<ModelData> treeGrid;
     private TreeStore<ModelData> treeStore = new TreeStore<ModelData>();
+    private boolean refreshing;
 
     public DeviceTabPackagesInstalled(DeviceTabPackages rootTabPanel) {
         super(DEVICE_MSGS.deviceInstallTabInstalled(), null);
@@ -89,6 +91,7 @@ public class DeviceTabPackagesInstalled extends TabItem {
         ColumnModel cm = new ColumnModel(Arrays.asList(name, version));
 
         treeGrid = new TreeGrid<ModelData>(treeStore, cm);
+        treeGrid.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
         treeGrid.setBorders(false);
         treeGrid.setLoadMask(true);
         treeGrid.setAutoExpandColumn("name");
@@ -119,14 +122,20 @@ public class DeviceTabPackagesInstalled extends TabItem {
     }
 
     public void refresh() {
+        if (refreshing) {
+            return;
+        } else {
+            refreshing = true;
+        }
 
-        if (dirty && initialized) {
+        if (initialized) {
 
             GwtDevice selectedDevice = getSelectedDevice();
             if (selectedDevice == null || !selectedDevice.isOnline()) {
                 treeStore.removeAll();
                 treeGrid.unmask();
                 treeGrid.getView().setEmptyText(DEVICE_MSGS.deviceNoDeviceSelectedOrOffline());
+                refreshing = false;
             } else {
                 treeGrid.mask(MSGS.loading());
 
@@ -152,12 +161,16 @@ public class DeviceTabPackagesInstalled extends TabItem {
                         }
 
                         treeGrid.unmask();
+                        rootTabPanel.getRefreshButton().enable();
+                        rootTabPanel.getInstallButton().enable();
+                        refreshing = false;
                     }
 
                     @Override
                     public void onFailure(Throwable caught) {
                         ConsoleInfo.display(MSGS.popupError(), DEVICE_MSGS.deviceConnectionError());
                         treeGrid.unmask();
+                        refreshing = false;
                     }
                 });
             }

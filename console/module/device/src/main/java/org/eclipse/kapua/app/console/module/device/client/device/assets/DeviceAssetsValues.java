@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -47,6 +47,8 @@ import org.eclipse.kapua.app.console.module.api.client.messages.ConsoleMessages;
 import org.eclipse.kapua.app.console.module.api.client.ui.button.DiscardButton;
 import org.eclipse.kapua.app.console.module.api.client.ui.button.RefreshButton;
 import org.eclipse.kapua.app.console.module.api.client.ui.button.SaveButton;
+import org.eclipse.kapua.app.console.module.api.client.ui.dialog.InfoDialog;
+import org.eclipse.kapua.app.console.module.api.client.ui.dialog.InfoDialog.InfoDialogType;
 import org.eclipse.kapua.app.console.module.api.client.ui.label.Label;
 import org.eclipse.kapua.app.console.module.api.client.util.ConsoleInfo;
 import org.eclipse.kapua.app.console.module.api.client.util.FailureHandler;
@@ -159,7 +161,6 @@ public class DeviceAssetsValues extends LayoutContainer {
                     dirty = true;
                     refresh();
                     refreshProcess = false;
-                    refreshButton.setEnabled(true);
                 }
             }
         });
@@ -195,13 +196,9 @@ public class DeviceAssetsValues extends LayoutContainer {
                 }
             }
         });
-        if (selectedDevice != null) {
-            refreshButton.setEnabled(true);
-        } else {
-            refreshButton.setEnabled(false);
-        }
         apply.setEnabled(false);
         reset.setEnabled(false);
+        refreshButton.setEnabled(false);
         toolBar.add(refreshButton);
         toolBar.add(new SeparatorToolItem());
         toolBar.add(apply);
@@ -373,7 +370,7 @@ public class DeviceAssetsValues extends LayoutContainer {
         }
         if (asset != null) {
 
-            assetValuesPanel = new DeviceAssetsPanel(asset);
+            assetValuesPanel = new DeviceAssetsPanel(asset, currentSession);
             assetValuesPanel.addListener(Events.Change, new Listener<BaseEvent>() {
 
                 @Override
@@ -384,7 +381,7 @@ public class DeviceAssetsValues extends LayoutContainer {
             });
 
         } else {
-            assetValuesPanel = new DeviceAssetsPanel(null);
+            assetValuesPanel = new DeviceAssetsPanel(null, currentSession);
         }
         assetValuesContainer.add(assetValuesPanel, centerData);
         assetValuesContainer.layout();
@@ -392,10 +389,8 @@ public class DeviceAssetsValues extends LayoutContainer {
 
     public void apply() {
         if (!assetValuesPanel.isValid()) {
-            MessageBox mb = new MessageBox();
-            mb.setIcon(MessageBox.ERROR);
-            mb.setMessage(DEVICE_MSGS.deviceConfigError());
-            mb.show();
+            InfoDialog exitDialog = new InfoDialog(InfoDialogType.ERROR, DEVICE_MSGS.deviceConfigError());
+            exitDialog.show();
             return;
         }
 
@@ -503,11 +498,18 @@ public class DeviceAssetsValues extends LayoutContainer {
         }
 
         @Override
+        public void loaderBeforeLoad(LoadEvent le) {
+            super.loaderBeforeLoad(le);
+            refreshButton.disable();
+        }
+
+        @Override
         public void loaderLoad(LoadEvent le) {
             if (le.exception != null) {
                 FailureHandler.handle(le.exception);
             }
             tree.unmask();
+            refreshButton.enable();
         }
 
         @Override
@@ -525,6 +527,7 @@ public class DeviceAssetsValues extends LayoutContainer {
             treeStore.add(assets, false);
 
             tree.unmask();
+            refreshButton.enable();
         }
     }
 }

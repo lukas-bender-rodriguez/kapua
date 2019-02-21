@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -39,12 +39,13 @@ import com.extjs.gxt.ui.client.widget.layout.FormLayout;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Node;
 import com.google.gwt.dom.client.NodeList;
-import com.google.gwt.dom.client.StyleInjector;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.eclipse.kapua.app.console.module.api.client.messages.ConsoleMessages;
 import org.eclipse.kapua.app.console.module.api.client.resources.icons.IconSet;
 import org.eclipse.kapua.app.console.module.api.client.resources.icons.KapuaIcon;
+import org.eclipse.kapua.app.console.module.api.client.ui.dialog.InfoDialog;
+import org.eclipse.kapua.app.console.module.api.client.ui.dialog.InfoDialog.InfoDialogType;
 import org.eclipse.kapua.app.console.module.api.client.ui.tab.KapuaTabItem;
 import org.eclipse.kapua.app.console.module.api.client.util.Constants;
 import org.eclipse.kapua.app.console.module.api.client.util.FailureHandler;
@@ -59,8 +60,6 @@ import org.eclipse.kapua.app.console.module.device.shared.model.permission.Devic
 
 public class DeviceTabCommand extends KapuaTabItem<GwtDevice> {
 
-    private static final String UNDEFINED_ERROR = "Error: ";
-    private static final String INTERNAL_ERROR = "Error: INTERNAL_ERROR";
     private static final ConsoleMessages MSGS = GWT.create(ConsoleMessages.class);
     private static final ConsoleDeviceMessages DEVICE_MSGS = GWT.create(ConsoleDeviceMessages.class);
 
@@ -217,13 +216,11 @@ public class DeviceTabCommand extends KapuaTabItem<GwtDevice> {
 
                     String errorMessage = htmlResult.substring(errorMessageStartIndex, errorMessageEndIndex);
 
-                    if (UNDEFINED_ERROR.equals(errorMessage)) {
-                        errorMessage = DEVICE_MSGS.deviceConnectionError();
-                    } else if (errorMessage.contains(INTERNAL_ERROR)) {
-                        errorMessage = DEVICE_MSGS.deviceCommandExecutionErrorMessage();
+                    if (!errorMessage.isEmpty()) {
+                        errorMessage = DEVICE_MSGS.deviceCommandCommunicationError();
+                    InfoDialog exitDialog = new InfoDialog(InfoDialogType.ERROR, MSGS.error() + MSGS.commandExecutionFailure() + ":<br/>" + errorMessage);
+                    exitDialog.show();
                     }
-                    StyleInjector.inject(".x-window-dlg .ext-mb-icon {width: 50px; height: 50px;}"); 
-                    MessageBox.alert(MSGS.error(), MSGS.commandExecutionFailure() + ":<br/>" + errorMessage, null).getDialog().addStyleName("x-window-dlg .ext-mb-icon" );
                     commandInput.unmask();
                 } else {
                     int outputMessageStartIndex = htmlResult.indexOf("<pre");

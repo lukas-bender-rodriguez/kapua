@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -60,6 +60,7 @@ import org.eclipse.kapua.app.console.module.api.shared.service.GwtSecurityTokenS
 import org.eclipse.kapua.app.console.module.device.client.messages.ConsoleDeviceMessages;
 import org.eclipse.kapua.app.console.module.device.shared.model.GwtDevice;
 import org.eclipse.kapua.app.console.module.device.shared.model.GwtSnapshot;
+import org.eclipse.kapua.app.console.module.device.shared.model.permission.DeviceManagementSessionPermission;
 import org.eclipse.kapua.app.console.module.device.shared.service.GwtDeviceManagementService;
 import org.eclipse.kapua.app.console.module.device.shared.service.GwtDeviceManagementServiceAsync;
 import org.eclipse.kapua.app.console.module.device.shared.service.GwtDeviceService;
@@ -163,7 +164,6 @@ public class DeviceConfigSnapshots extends LayoutContainer {
                     dirty = true;
                     reload();
 
-                    refreshButton.setEnabled(true);
                     refreshProcess = false;
                 }
             }
@@ -199,12 +199,11 @@ public class DeviceConfigSnapshots extends LayoutContainer {
 
                     uploadSnapshot();
 
-                    uploadButton.setEnabled(true);
                     uploadProcess = false;
                 }
             }
         });
-        uploadButton.setEnabled(true);
+        uploadButton.setEnabled(false);
 
         rollbackButton = new SnapshotRollbackButton(new SelectionListener<ButtonEvent>() {
 
@@ -216,7 +215,7 @@ public class DeviceConfigSnapshots extends LayoutContainer {
 
                     rollbackSnapshot();
 
-                    rollbackButton.setEnabled(true);
+                    rollbackButton.setEnabled(currentSession.hasPermission(DeviceManagementSessionPermission.execute()));
                     rollbackProcess = false;
                 }
             }
@@ -303,7 +302,7 @@ public class DeviceConfigSnapshots extends LayoutContainer {
             public void selectionChanged(SelectionChangedEvent<GwtSnapshot> se) {
                 if (se.getSelectedItem() != null) {
                     downloadButton.setEnabled(true);
-                    rollbackButton.setEnabled(true);
+                    rollbackButton.setEnabled(currentSession.hasPermission(DeviceManagementSessionPermission.execute()));
                 } else {
                     downloadButton.setEnabled(false);
                     rollbackButton.setEnabled(false);
@@ -377,7 +376,6 @@ public class DeviceConfigSnapshots extends LayoutContainer {
                 grid.getStore().removeAll();
             } else {
                 toolBar.enable();
-                refreshButton.enable();
                 downloadButton.disable();
                 rollbackButton.disable();
                 reload();
@@ -433,7 +431,13 @@ public class DeviceConfigSnapshots extends LayoutContainer {
             });
 
             fileUpload.setHeading(MSGS.upload());
-            fileUpload.setToolTip(DEVICE_MSGS.deviceSnapshotFileTooltip());
+            fileUpload.addListener(Events.Render, new Listener<BaseEvent>() {
+
+                @Override
+                public void handleEvent(BaseEvent be) {
+                    fileUpload.getFileUploadField().setToolTip(DEVICE_MSGS.deviceSnapshotFileTooltip());
+                }
+            });
             fileUpload.show();
         }
     }
@@ -508,10 +512,19 @@ public class DeviceConfigSnapshots extends LayoutContainer {
         }
 
         @Override
+        public void loaderBeforeLoad(LoadEvent le) {
+            super.loaderBeforeLoad(le);
+            refreshButton.disable();
+            uploadButton.disable();
+        }
+
+        @Override
         public void loaderLoad(LoadEvent le) {
             if (le.exception != null) {
                 FailureHandler.handle(le.exception);
             }
+            refreshButton.enable();
+            uploadButton.setEnabled(currentSession.hasPermission(DeviceManagementSessionPermission.write()));
         }
 
         @Override
@@ -523,6 +536,8 @@ public class DeviceConfigSnapshots extends LayoutContainer {
             store.removeAll();
             grid.unmask();
             toolBar.enable();
+            refreshButton.enable();
+            uploadButton.setEnabled(currentSession.hasPermission(DeviceManagementSessionPermission.write()));
         }
     }
 }

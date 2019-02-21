@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -40,6 +40,7 @@ import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.extjs.gxt.ui.client.widget.treepanel.TreePanel;
 import com.extjs.gxt.ui.client.widget.treepanel.TreePanelSelectionModel;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.StyleInjector;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -49,6 +50,8 @@ import org.eclipse.kapua.app.console.module.api.client.resources.icons.KapuaIcon
 import org.eclipse.kapua.app.console.module.api.client.ui.button.DiscardButton;
 import org.eclipse.kapua.app.console.module.api.client.ui.button.RefreshButton;
 import org.eclipse.kapua.app.console.module.api.client.ui.button.SaveButton;
+import org.eclipse.kapua.app.console.module.api.client.ui.dialog.InfoDialog;
+import org.eclipse.kapua.app.console.module.api.client.ui.dialog.InfoDialog.InfoDialogType;
 import org.eclipse.kapua.app.console.module.api.client.ui.label.Label;
 import org.eclipse.kapua.app.console.module.api.client.util.ConsoleInfo;
 import org.eclipse.kapua.app.console.module.api.client.util.FailureHandler;
@@ -163,7 +166,6 @@ public class DeviceConfigComponents extends LayoutContainer {
                     dirty = true;
                     refresh();
                     refreshProcess = false;
-                    refreshButton.setEnabled(true);
                     gwtSession.setFormDirty(false);
                 }
             }
@@ -206,11 +208,6 @@ public class DeviceConfigComponents extends LayoutContainer {
         apply.setEnabled(false);
         reset.setEnabled(false);
         gwtSession.setFormDirty(false);
-        if (selectedDevice == null) {
-            refreshButton.setEnabled(false);
-        } else {
-            refreshButton.setEnabled(true);
-        }
         toolBar.add(refreshButton);
         toolBar.add(new SeparatorToolItem());
         toolBar.add(apply);
@@ -342,6 +339,16 @@ public class DeviceConfigComponents extends LayoutContainer {
                 }
             }
         });
+
+        tree.getSelectionModel().addListener(Events.SelectionChange, new Listener<BaseEvent>() {
+
+            @Override
+            public void handleEvent(BaseEvent be) {
+                String customWidth = tree.getElement().getScrollWidth() + "px";
+                StyleInjector.inject(".x-tree3-node { width: " + customWidth + "}");
+            }
+        });
+
     }
 
     // --------------------------------------------------------------------------------------
@@ -401,11 +408,6 @@ public class DeviceConfigComponents extends LayoutContainer {
 
     public void refresh() {
         if (dirty && initialized) {
-            if (selectedDevice != null) {
-                refreshButton.setEnabled(true);
-            } else {
-                refreshButton.setEnabled(false);
-            }
             // clear the tree and disable the toolbar
             apply.setEnabled(false);
             reset.setEnabled(false);
@@ -452,10 +454,9 @@ public class DeviceConfigComponents extends LayoutContainer {
 
     public void apply() {
         if (!devConfPanel.isValid()) {
-            MessageBox mb = new MessageBox();
-            mb.setIcon(MessageBox.ERROR);
-            mb.setMessage(DEVICE_MSGS.deviceConfigError());
-            mb.show();
+            InfoDialog exitDialog = new InfoDialog(InfoDialogType.ERROR, DEVICE_MSGS.deviceConfigError());
+            exitDialog.show();
+
             return;
         }
 
@@ -611,11 +612,18 @@ public class DeviceConfigComponents extends LayoutContainer {
     private class DataLoadListener extends KapuaLoadListener {
 
         @Override
+        public void loaderBeforeLoad(LoadEvent le) {
+            super.loaderBeforeLoad(le);
+            refreshButton.disable();
+        }
+
+        @Override
         public void loaderLoad(LoadEvent le) {
             if (le.exception != null) {
                 FailureHandler.handle(le.exception);
             }
             tree.unmask();
+            refreshButton.enable();
         }
 
         @Override
@@ -635,6 +643,7 @@ public class DeviceConfigComponents extends LayoutContainer {
             treeStore.add(comps, false);
 
             tree.unmask();
+            refreshButton.enable();
         }
     }
 }

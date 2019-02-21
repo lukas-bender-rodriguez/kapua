@@ -32,7 +32,11 @@ services:
       - es
       - events-broker
     environment:
+<<<<<<< HEAD
       - KAPUA_DISABLE_SSL=false
+=======
+      - KAPUA_DISABLE_SSL
+>>>>>>> release-1.0.x
       - KAPUA_CRT
       - KAPUA_CA
       - KAPUA_KEY
@@ -42,17 +46,25 @@ services:
   kapua-console:
     image: lukasbender/kapua-console:${IMAGE_VERSION}
     ports:
+<<<<<<< HEAD
       - 8082:8080
+=======
+      - 8080:8080
+      - 8443:8443
+>>>>>>> release-1.0.x
     depends_on:
       - broker
       - db
       - es
       - events-broker
     environment:
+<<<<<<< HEAD
       - VIRTUAL_HOST=kapua.bender.beegy-dev.cc
       - VIRTUAL_PORT=8080
       - LETSENCRYPT_HOST=kapua.bender.beegy-dev.cc
       - LETSENCRYPT_EMAIL=lukas.exel@beegy.com
+=======
+>>>>>>> release-1.0.x
       - KAPUA_DISABLE_SSL
       - KAPUA_CA
       - KAPUA_CRT
@@ -64,16 +76,23 @@ services:
     image: lukasbender/kapua-api:${IMAGE_VERSION}
     ports:
       - 8081:8080
+<<<<<<< HEAD
+=======
+      - 8444:8443
+>>>>>>> release-1.0.x
     depends_on:
       - broker
       - db
       - es
       - events-broker
     environment:
+<<<<<<< HEAD
       - VIRTUAL_HOST=kapua-api.bender.beegy-dev.cc
       - VIRTUAL_PORT=8080
       - LETSENCRYPT_HOST=kapua-api.bender.beegy-dev.cc
       - LETSENCRYPT_EMAIL=lukas.exel@beegy.com
+=======
+>>>>>>> release-1.0.x
       - KAPUA_DISABLE_SSL
       - KAPUA_CA
       - KAPUA_CRT
@@ -81,8 +100,11 @@ services:
       - KAPUA_KEY_PASSWORD
       - KAPUA_KEYSTORE
       - KAPUA_KEYSTORE_PASSWORD
+<<<<<<< HEAD
 
 networks:
   default:
     external:
       name: nginx_bridge
+=======
+>>>>>>> release-1.0.x

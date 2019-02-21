@@ -60,12 +60,13 @@ public class TextFieldValidator implements Validator {
 
         SIMPLE_NAME("simple_name", "^[a-zA-Z0-9\\-]{3,}$"),
         DEVICE_CLIENT_ID("device_client_id", "^[a-zA-Z0-9\\:\\_\\-]{1,}$"),
+        SNAPSHOT_FILE("snapshot_file", "^([a-zA-Z0-9\\:\\_\\-\\\\]){1,255}(\\.xml)"),
         NAME("name", "^[a-zA-Z0-9\\_\\-]{3,}$"),
         NAME_SPACE("name_space", "^[a-zA-Z0-9\\ \\_\\-]{3,}$"),
-        PASSWORD("password", "^.*(?=.{12,})(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=!\\~\\|]).*$"),
+        PASSWORD("password", "^.*(?=.{12,})(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!\\\"\\#$%&'()*+,\\-./:;<=>?@\\[\\]\\\\^_`{|}~]).*$"),
         EMAIL("email", "^(\\w+)([-+.][\\w]+)*@(\\w[-\\w]*\\.){1,5}([A-Za-z]){2,4}$"),
         PHONE("phone",
-                "([\\+(]?(\\d){2,}[)]?[- \\.]?(\\d){2,}[- \\.]?(\\d){2,}[- \\.]?(\\d){2,}[- \\.]?(\\d){2,})|([\\+(]?(\\d){2,}[)]?[- \\.]?(\\d){2,}[- \\.]?(\\d){2,}[- \\.]?(\\d){2,})|([\\+(]?(\\d){2,}[)]?[- \\.]?(\\d){2,}[- \\.]?(\\d){2,})"),
+                "^\\+? ?[0-9_]+( [0-9_]+)*$"),
         ALPHABET("alphabet", "^[a-zA-Z_]+$"),
         ALPHANUMERIC("alphanumeric", "^[a-zA-Z0-9_]+$"),
         NUMERIC("numeric", "^[+0-9.]+$");

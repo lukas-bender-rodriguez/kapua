@@ -13,7 +13,7 @@
 ################################################################################
 
 # Check for Keycloak integration
-if [ -n "$KEYCLOAK_URL" -a -n "$KAPUA_URL" ]; then
+if [ -n "$KEYCLOAK_URL" ] && [ -n "$KAPUA_URL" ]; then
    echo "Activating Keycloak integration..."
    echo "  Keycloak: $KEYCLOAK_URL"
    echo "  Kapua:    $KAPUA_URL"
@@ -36,4 +36,4 @@ if [ -n "$KEYCLOAK_URL" -a -n "$KAPUA_URL" ]; then
 fi
 
 # Continue with startup
-exec /home/kapua/run-jetty "$@"
+exec /var/opt/jetty/run-jetty "$@"

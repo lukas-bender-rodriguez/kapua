@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -11,8 +11,12 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.scheduler.trigger.quartz;
 
+import java.sql.Date;
+import java.util.TimeZone;
 import org.eclipse.kapua.KapuaDuplicateNameException;
+import org.eclipse.kapua.KapuaEndBeforeStartTimeException;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
+import org.eclipse.kapua.KapuaErrorCodes;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableResourceLimitedService;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
@@ -50,8 +54,6 @@ import org.quartz.TriggerBuilder;
 import org.quartz.TriggerKey;
 import org.quartz.impl.StdSchedulerFactory;
 
-import java.util.TimeZone;
-
 /**
  * {@link TriggerService} implementation.
  *
@@ -82,6 +84,7 @@ public class TriggerServiceImpl extends AbstractKapuaConfigurableResourceLimited
         ArgumentValidator.notNull(triggerCreator, "triggerCreator");
         ArgumentValidator.notNull(triggerCreator.getScopeId(), "triggerCreator.scopeId");
         ArgumentValidator.notEmptyOrNull(triggerCreator.getName(), "triggerCreator.name");
+        ArgumentValidator.notNull(triggerCreator.getStartsOn(), "triggerCreator.startsOn");
 
         //
         // Check Access
@@ -93,7 +96,23 @@ public class TriggerServiceImpl extends AbstractKapuaConfigurableResourceLimited
         query.setPredicate(new AttributePredicateImpl<>(TriggerAttributes.NAME, triggerCreator.getName()));
 
         if (count(query) > 0) {
-            throw new KapuaDuplicateNameException(triggerCreator.getName());
+            throw new KapuaDuplicateNameException();
+        }
+
+        if (triggerCreator.getRetryInterval() != null && triggerCreator.getCronScheduling() != null) {
+            throw new KapuaException(KapuaErrorCodes.RETRY_AND_CRON_BOTH_SELECTED);
+        }
+
+        if (triggerCreator.getStartsOn().equals(triggerCreator.getEndsOn()) && triggerCreator.getStartsOn().getTime() == (triggerCreator.getEndsOn().getTime())) {
+            throw new KapuaException(KapuaErrorCodes.SAME_START_AND_DATE);
+        }
+
+        if (triggerCreator.getEndsOn() != null) {
+            Date startTime = new Date(triggerCreator.getStartsOn().getTime());
+            Date endTime = new Date(triggerCreator.getEndsOn().getTime());
+            if (startTime.after(endTime)) {
+                throw new KapuaEndBeforeStartTimeException();
+            }
         }
 
         //
