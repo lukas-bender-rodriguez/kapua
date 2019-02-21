@@ -1,0 +1,108 @@
+version: '3.1'
+
+services:
+  db:
+    image: ${DOCKER_REPO}/kapua-sql:${IMAGE_VERSION}
+    ports:
+      - 8181:8181
+      - 3306:3306
+    volumes:
+      - dbdata:/var/h2/data
+  es:
+    image: elasticsearch:5.4.0
+    ports:
+      - 9200:9200
+      - 9300:9300
+    environment:
+      - cluster.name=kapua-datastore
+      - discovery.type=single-node
+      - transport.host=_site_
+      - transport.ping_schedule=-1
+      - transport.tcp.connect_timeout=30s
+    volumes:
+      - esdata1:/usr/share/elasticsearch/data
+  events-broker:
+    image: ${DOCKER_REPO}/kapua-events-broker:${IMAGE_VERSION}
+    ports:
+      - 5672:5672 # what is the purpose of this port
+    environment:
+      - transport.credential.password # it think this is not needed
+    volumes:
+      - events-brokerdata:/opt/artemis/data
+  broker:
+    image: ${DOCKER_REPO}/kapua-broker:${IMAGE_VERSION}
+    ports:
+      - 1883:1883
+      - 8883:8883
+      - 61614:61614
+    depends_on:
+      - db
+      - es
+      - events-broker
+    environment:
+      - transport.credential.password
+      - KAPUA_DISABLE_SSL=true
+      - KAPUA_CRT
+      - KAPUA_CA
+      - KAPUA_KEY
+      - KAPUA_KEY_PASSWORD
+      - KAPUA_KEYSTORE
+      - KAPUA_KEYSTORE_PASSWORD
+    volumes:
+      - brokerdata:/maven/data
+  kapua-console:
+    image: ${DOCKER_REPO}/kapua-console:${IMAGE_VERSION}
+#    ports:
+#      - 8082:8080
+    depends_on:
+      - broker
+      - db
+      - es
+      - events-broker
+    environment:
+      - transport.credential.password
+      - VIRTUAL_HOST=${HOST_URL}
+      - VIRTUAL_PORT=8080
+      - LETSENCRYPT_HOST=${HOST_URL}
+      - LETSENCRYPT_EMAIL=${MAINTAINER_MAIL}
+      - KAPUA_DISABLE_SSL
+      - KAPUA_CA
+      - KAPUA_CRT
+      - KAPUA_KEY
+      - KAPUA_KEY_PASSWORD
+      - KAPUA_KEYSTORE
+      - KAPUA_KEYSTORE_PASSWORD
+  kapua-api:
+    image: ${DOCKER_REPO}/kapua-api:${IMAGE_VERSION}
+#    ports:
+#      - 8081:8080
+    depends_on:
+      - broker
+      - db
+      - es
+      - events-broker
+    environment:
+      - transport.credential.password
+      - VIRTUAL_HOST=api.${HOST_URL}
+      - VIRTUAL_PORT=8080
+      - LETSENCRYPT_HOST=api.${HOST_URL}
+      - LETSENCRYPT_EMAIL=${MAINTAINER_MAIL}
+      - KAPUA_DISABLE_SSL
+      - KAPUA_CA
+      - KAPUA_CRT
+      - KAPUA_KEY
+      - KAPUA_KEY_PASSWORD
+      - KAPUA_KEYSTORE
+      - KAPUA_KEYSTORE_PASSWORD
+
+volumes:
+  esdata1:
+  esdatabackup:
+  dbdata:
+  events-brokerdata:
+  brokerdata:
+
+networks:
+  default:
+    external:
+      name: nginx_bridge
