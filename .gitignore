@@ -1,3 +1,9 @@
+# env files containig pwd
+deployment/docker-ext/compose/env-mars
+
+# scratch folder
+deployment/scratch
+
 #
 # Java .gitignore
 # https://github.com/github/gitignore/blob/master/Java.gitignore
@@ -94,7 +100,7 @@ local.properties
 
 #
 # Embedded derby DB
-# 
+#
 derby.log
 
 #

@@ -355,34 +355,6 @@
                         </dependency>
                     </dependencies>
                 </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-checkstyle-plugin</artifactId>
-                    <version>${maven-checkstyle-plugin.version}</version>
-                    <dependencies>
-                        <dependency>
-                            <groupId>org.eclipse.kapua.build</groupId>
-                            <artifactId>kapua-build-tools</artifactId>
-                            <version>${project.version}</version>
-                        </dependency>
-                        <dependency>
-                            <groupId>com.puppycrawl.tools</groupId>
-                            <artifactId>checkstyle</artifactId>
-                            <version>${checkstyle.version}</version>
-                        </dependency>
-                    </dependencies>
-                    <configuration>
-                        <configLocation>checkstyle/kapua.xml</configLocation>
-                        <suppressionsLocation>checkstyle/kapua.suppressions.xml</suppressionsLocation>
-
-                        <includeResources>false</includeResources>
-                        <includeTestResources>false</includeTestResources>
-
-                        <sourceDirectory>${project.basedir}</sourceDirectory>
-                        <includes>**/*.java, **/*.xml</includes>
-                        <excludes>**/target/**/*, **/.settings/**/*, maven/**/*, .maven/**/*, .idea/**/*</excludes>
-                    </configuration>
-                </plugin>
             </plugins>
         </pluginManagement>
         <plugins>

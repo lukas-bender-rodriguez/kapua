@@ -54,6 +54,18 @@ public enum ClientSettingsKey implements SettingKey {
      */
     SCROLL_TIMEOUT("datastore.scroll.timeout"),
     /**
+     * Enable Elastichsearch basic authentication
+     */
+    ELASTICSEARCH_BASIC_AUTH_ENABLED("datastore.elasticsearch.basic_auth.enabled"),
+    /**
+     * Elastichsearch user if basic authentication is enabled
+     */
+    ELASTICSEARCH_BASIC_AUTH_USER("datastore.elasticsearch.basic_auth.user"),
+    /**
+     * Elastichsearch password if basic authentication is enabled
+     */
+    ELASTICSEARCH_BASIC_AUTH_PWD("datastore.elasticsearch.basic_auth.pwd"), 
+    /**
      * Enable Elastichsearch client ssl connection (at the present only the rest client supports it)
      */
     ELASTICSEARCH_SSL_ENABLED("datastore.elasticsearch.ssl.enabled"),

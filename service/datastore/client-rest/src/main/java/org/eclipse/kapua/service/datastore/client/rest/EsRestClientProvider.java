@@ -35,6 +35,10 @@ import javax.net.ssl.SSLContext;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpHost;
+import org.apache.http.auth.AuthScope;
+import org.apache.http.auth.UsernamePasswordCredentials;
+import org.apache.http.client.CredentialsProvider;
+import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.nio.client.HttpAsyncClientBuilder;
 import org.apache.http.ssl.SSLContextBuilder;
 import org.apache.http.ssl.SSLContexts;
@@ -253,6 +257,23 @@ public class EsRestClientProvider implements ClientProvider<RestClient> {
             } catch (KeyStoreException | NoSuchAlgorithmException | KeyManagementException | UnrecoverableKeyException e) {
                 throw new ClientUnavailableException(PROVIDER_FAILED_TO_CONFIGURE_SSL_MSG, e);
             }
+        }
+        boolean basicAuthEnabled = ClientSettings.getInstance().getBoolean(ClientSettingsKey.ELASTICSEARCH_BASIC_AUTH_ENABLED, false);
+        logger.info("ES Rest Client - Basic Authentication {}enabled", (basicAuthEnabled ? "" : "NOT "));
+        if (basicAuthEnabled) {
+        	String basicAuthUser = ClientSettings.getInstance().getString(ClientSettingsKey.ELASTICSEARCH_BASIC_AUTH_ENABLED);
+        	String basicAuthPwd = ClientSettings.getInstance().getString(ClientSettingsKey.ELASTICSEARCH_BASIC_AUTH_PWD);
+        	
+        	final CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
+        	credentialsProvider.setCredentials(AuthScope.ANY, 
+        			new UsernamePasswordCredentials(basicAuthUser, basicAuthPwd));
+            restClientBuilder.setHttpClientConfigCallback(new RestClientBuilder.HttpClientConfigCallback() {
+            	
+                @Override
+                public HttpAsyncClientBuilder customizeHttpClient(HttpAsyncClientBuilder httpClientBuilder) {
+                    return httpClientBuilder.setDefaultCredentialsProvider(credentialsProvider);
+                }
+            });
         }
         return restClientBuilder.build();
     }

@@ -2,6 +2,7 @@ version: '2'
 
 services:
   nginx-proxy:
+    restart: always
     image: jwilder/nginx-proxy
     container_name: nginx-proxy
     ports:
@@ -14,9 +15,9 @@ services:
       - dhparam:/etc/nginx/dhparam
       - certs:/etc/nginx/certs:ro
       - /var/run/docker.sock:/tmp/docker.sock:ro
-    network_mode: bridge
 
   letsencrypt:
+    restart: always
     image: jrcs/letsencrypt-nginx-proxy-companion
     container_name: nginx-proxy-le
     volumes_from:
@@ -24,7 +25,6 @@ services:
     volumes:
       - certs:/etc/nginx/certs:rw
       - /var/run/docker.sock:/var/run/docker.sock:ro
-    network_mode: bridge
 
 volumes:
   conf:
