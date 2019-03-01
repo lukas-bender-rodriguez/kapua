@@ -24,7 +24,7 @@ install:
 - chmod a+x maven/bin/mvn
 
 before_script:
-  - export IMAGE_TAG='1.0.4.1'
+  - export IMAGE_TAG='1.0.4.2'
   - export M2_HOME=$PWD/maven
   - export PATH=${M2_HOME}/bin:${PATH}
   - export BUILD_OPTS=""
