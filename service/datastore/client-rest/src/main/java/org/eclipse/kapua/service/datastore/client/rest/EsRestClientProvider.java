@@ -85,7 +85,7 @@ public class EsRestClientProvider implements ClientProvider<RestClient> {
 
     /**
      * Get the {@link EsRestClientProvider} instance
-     * 
+     *
      * @return
      * @throws ClientUnavailableException
      */
@@ -101,7 +101,7 @@ public class EsRestClientProvider implements ClientProvider<RestClient> {
      * The nodes addresses and other parameters are read from the configuration file.<br>
      * <b>NOTE. The init methods can be called more than once in order to reinitialize the underlying datastore connection. It the datastore was already initialized this method close the old one
      * before initializing the new one.</b>
-     * 
+     *
      * @return
      * @throws ClientUnavailableException
      */
@@ -120,7 +120,7 @@ public class EsRestClientProvider implements ClientProvider<RestClient> {
      * The nodes addresses and other parameters are overwritten with the provided settings.<br>
      * <b>NOTE. The init methods can be called more than once in order to reinitialize the underlying datastore connection. It the datastore was already initialized this method close the old one
      * before initializing the new one.</b>
-     * 
+     *
      * @param settings
      * @throws ClientException
      */
@@ -137,7 +137,7 @@ public class EsRestClientProvider implements ClientProvider<RestClient> {
      * Initialize the {@link EsRestClientProvider} singleton instance.<br>
      * <b>NOTE. The init methods can be called more than once in order to reinitialize the underlying datastore connection. It the datastore was already initialized this method close the old one
      * before initializing the new one.</b>
-     * 
+     *
      * @param addresses
      *            nodes addresses list
      * @throws ClientException
@@ -160,7 +160,7 @@ public class EsRestClientProvider implements ClientProvider<RestClient> {
 
     /**
      * Close the ES rest client
-     * 
+     *
      * @throws ClientUnavailableException
      */
     public static void close() throws ClientUnavailableException {
@@ -198,7 +198,7 @@ public class EsRestClientProvider implements ClientProvider<RestClient> {
 
     /**
      * Create the Elasticsearch rest client based on the provided configuration settings
-     * 
+     *
      * @param settings
      * @throws ClientUnavailableException
      */
@@ -208,7 +208,7 @@ public class EsRestClientProvider implements ClientProvider<RestClient> {
 
     /**
      * Create the Elasticsearch rest client based on the provided configuration addresses
-     * 
+     *
      * @param addresses
      * @throws ClientUnavailableException
      */
@@ -261,14 +261,14 @@ public class EsRestClientProvider implements ClientProvider<RestClient> {
         boolean basicAuthEnabled = ClientSettings.getInstance().getBoolean(ClientSettingsKey.ELASTICSEARCH_BASIC_AUTH_ENABLED, false);
         logger.info("ES Rest Client - Basic Authentication {}enabled", (basicAuthEnabled ? "" : "NOT "));
         if (basicAuthEnabled) {
-        	String basicAuthUser = ClientSettings.getInstance().getString(ClientSettingsKey.ELASTICSEARCH_BASIC_AUTH_ENABLED);
-        	String basicAuthPwd = ClientSettings.getInstance().getString(ClientSettingsKey.ELASTICSEARCH_BASIC_AUTH_PWD);
-        	
-        	final CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
-        	credentialsProvider.setCredentials(AuthScope.ANY, 
-        			new UsernamePasswordCredentials(basicAuthUser, basicAuthPwd));
+          String basicAuthUser = ClientSettings.getInstance().getString(ClientSettingsKey.ELASTICSEARCH_BASIC_AUTH_ENABLED);
+          String basicAuthPwd = ClientSettings.getInstance().getString(ClientSettingsKey.ELASTICSEARCH_BASIC_AUTH_PWD);
+
+          final CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
+          credentialsProvider.setCredentials(AuthScope.ANY,
+              new UsernamePasswordCredentials(basicAuthUser, basicAuthPwd));
             restClientBuilder.setHttpClientConfigCallback(new RestClientBuilder.HttpClientConfigCallback() {
-            	
+
                 @Override
                 public HttpAsyncClientBuilder customizeHttpClient(HttpAsyncClientBuilder httpClientBuilder) {
                     return httpClientBuilder.setDefaultCredentialsProvider(credentialsProvider);
