@@ -261,8 +261,10 @@ public class EsRestClientProvider implements ClientProvider<RestClient> {
         boolean basicAuthEnabled = ClientSettings.getInstance().getBoolean(ClientSettingsKey.ELASTICSEARCH_BASIC_AUTH_ENABLED, false);
         logger.info("ES Rest Client - Basic Authentication {}enabled", (basicAuthEnabled ? "" : "NOT "));
         if (basicAuthEnabled) {
-          String basicAuthUser = ClientSettings.getInstance().getString(ClientSettingsKey.ELASTICSEARCH_BASIC_AUTH_ENABLED);
+          String basicAuthUser = ClientSettings.getInstance().getString(ClientSettingsKey.ELASTICSEARCH_BASIC_AUTH_USER);
+          logger.info("Basic Auth User: {}", basicAuthUser);
           String basicAuthPwd = ClientSettings.getInstance().getString(ClientSettingsKey.ELASTICSEARCH_BASIC_AUTH_PWD);
+          logger.info("Basic Auth pwd: {}", basicAuthPwd);
 
           final CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
           credentialsProvider.setCredentials(AuthScope.ANY,
