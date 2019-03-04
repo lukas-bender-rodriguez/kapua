@@ -36,13 +36,14 @@ jobs:
   include:
   - stage: build
     script:
-      - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
       - $M2_HOME/bin/mvn -v
       - $M2_HOME/bin/mvn -B -f external/pom.xml install
-      - $M2_HOME/bin/mvn -B ${BUILD_OPTS} -DskipTests install
+      - $M2_HOME/bin/mvn -B ${BUILD_OPTS} clean install -DskipTests -Pdev
   - stage: dockerbuild
     script:
-      - $M2_HOME/bin/mvn clean install -Pdocker,console -DskipTests
+      - $M2_HOME/bin/mvn -v
+      - $M2_HOME/bin/mvn -B -f external/pom.xml install
+      - $M2_HOME/bin/mvn clean install -Pdocker,console,dev -DskipTests
       - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
       - docker image ls --all
       - docker tag kapua/kapua-broker $DOCKER_REPO/kapua-broker:$IMAGE_TAG
