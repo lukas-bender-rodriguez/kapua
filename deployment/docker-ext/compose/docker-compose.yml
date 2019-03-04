@@ -36,10 +36,12 @@ services:
       - datastore.elasticsearch.port
       - datastore.elasticsearch.ssl.enabled
       - datastore.elasticsearch.ssl.trust_server_certificate
-      - transport.credential.password=${KAPUA_PW}
       - datastore.elasticsearch.basic_auth.enabled
       - datastore.elasticsearch.basic_auth.user
       - datastore.elasticsearch.basic_auth.pwd
+      - DATASTORE_ADDR
+      - DATASTORE_PORT
+      - transport.credential.password=${KAPUA_PW}
       - KAPUA_DISABLE_SSL=true
       - KAPUA_CRT
       - KAPUA_CA
@@ -94,6 +96,11 @@ services:
       - datastore.elasticsearch.port
       - datastore.elasticsearch.ssl.enabled
       - datastore.elasticsearch.ssl.trust_server_certificate
+      - datastore.elasticsearch.basic_auth.enabled
+      - datastore.elasticsearch.basic_auth.user
+      - datastore.elasticsearch.basic_auth.pwd
+      - DATASTORE_ADDR
+      - DATASTORE_PORT
       - transport.credential.password=${KAPUA_PW}
       - VIRTUAL_HOST=api.${HOST_URL}
       - VIRTUAL_PORT=8080

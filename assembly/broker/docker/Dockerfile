@@ -21,6 +21,7 @@ ENV DATASTORE_CLIENT org.eclipse.kapua.service.datastore.client.rest.RestDatasto
 
 ENV SQL_DB_ADDR db
 ENV SQL_DB_PORT 3306
+ENV SERIALIZABLE_PACKAGE *
 
 ENV SERVICE_BROKER_ADDR failover:(amqp://events-broker:5672)?jms.sendTimeout=1000
 
@@ -39,6 +40,7 @@ ENV ACTIVEMQ_OPTS "-Dcommons.db.schema.update=true \
                    -Dcommons.eventbus.url=\${SERVICE_BROKER_ADDR} \
                    -Dcertificate.jwt.private.key=file:///var/opt/activemq/key.pk8 \
                    -Dcertificate.jwt.certificate=file:///var/opt/activemq/cert.pem \
+                   -Dorg.apache.activemq.SERIALIZABLE_PACKAGES=\${SERIALIZABLE_PACKAGE} \
                    -Dbroker.ip=broker"
 
 EXPOSE 1883 8883 61614 61615 8161
