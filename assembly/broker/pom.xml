@@ -376,6 +376,10 @@
             <artifactId>percolator-client</artifactId>
             <version>${elasticsearch-client-transport.version}</version>
         </dependency>
+        <dependency>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
+        </dependency>
 
         <!--
             Java APIs from Tomcat:
