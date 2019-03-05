@@ -611,6 +611,14 @@
                                     <outputDirectory>target/broker_dependency</outputDirectory>
                                 </artifactItem>
                                 <artifactItem>
+                                    <groupId>commons-codec</groupId>
+                                    <artifactId>commons-codec</artifactId>
+                                    <version>${commons-codec.version}</version>
+                                    <type>jar</type>
+                                    <overWrite>true</overWrite>
+                                    <outputDirectory>target/broker_dependency</outputDirectory>
+                                </artifactItem>
+                                <artifactItem>
                                     <groupId>org.apache.commons</groupId>
                                     <artifactId>commons-lang3</artifactId>
                                     <version>${commons-lang.version}</version>
