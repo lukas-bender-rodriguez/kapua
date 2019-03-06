@@ -962,7 +962,7 @@
             <dependency>
                 <groupId>mysql</groupId>
                 <artifactId>mysql-connector-java</artifactId>
-                <version>${mysql-client.version}</version>
+                <version>${mysql-connector-java.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.ning</groupId>
