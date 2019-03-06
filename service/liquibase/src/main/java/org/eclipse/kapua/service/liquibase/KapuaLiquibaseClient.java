@@ -63,6 +63,10 @@ public class KapuaLiquibaseClient {
     public void update() {
         try {
             if (Boolean.parseBoolean(System.getProperty("LIQUIBASE_ENABLED", "true")) || Boolean.parseBoolean(System.getenv("LIQUIBASE_ENABLED"))) {
+                LOG.info("used jdbcUrl: {}", jdbcUrl);
+                LOG.info("used username: {}", username);
+                LOG.info("used password: {}", password);
+                LOG.info("used schema: {}", schema);
                 try (Connection connection = DriverManager.getConnection(jdbcUrl, username, password)) {
                     loadResourcesStatic(connection, schema);
                 }
