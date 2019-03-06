@@ -54,7 +54,7 @@
         <junit.version>4.11</junit.version>
         <liquibase.version>3.0.5</liquibase.version>
         <mockito.version>1.10.19</mockito.version>
-        <mariadb-client.version>2.4.0</mariadb-client.version>
+        <mysql-connector-java.version>8.0.15</mysql-connector-java.version>
         <opencsv.version>3.7</opencsv.version>
         <paho.version>1.1.0</paho.version>
         <protobuf.version>2.6.1</protobuf.version>
@@ -960,9 +960,9 @@
                 <version>${h2.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.mariadb.jdbc</groupId>
-                <artifactId>mariadb-java-client</artifactId>
-                <version>${mariadb-client.version}</version>
+                <groupId>mysql</groupId>
+                <artifactId>mysql-connector-java</artifactId>
+                <version>${mysql-client.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.ning</groupId>

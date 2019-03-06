@@ -34,11 +34,6 @@ before_script:
 
 jobs:
   include:
-  - stage: build
-    script:
-      - $M2_HOME/bin/mvn -v
-      - $M2_HOME/bin/mvn -B -f external/pom.xml install
-      - $M2_HOME/bin/mvn -B ${BUILD_OPTS} clean install -DskipTests -Pdev
   - stage: dockerbuild
     script:
       - $M2_HOME/bin/mvn -v
@@ -60,6 +55,11 @@ jobs:
       - docker push $DOCKER_REPO/kapua-events-broker
       - docker tag kapua/java-base $DOCKER_REPO/java-base:$IMAGE_TAG
       - docker push $DOCKER_REPO/java-base
+  - stage: build
+    script:
+      - $M2_HOME/bin/mvn -v
+      - $M2_HOME/bin/mvn -B -f external/pom.xml install
+      - $M2_HOME/bin/mvn -B ${BUILD_OPTS} clean install -DskipTests -Pdev
   - stage: test
     script:
     - ./travis.sh $M2_HOME/bin/mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dcucumber.options="--tags @default" verify
