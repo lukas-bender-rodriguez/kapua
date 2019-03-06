@@ -1,6 +1,13 @@
 version: '3.1'
 
 services:
+  db:
+    image: ${DOCKER_REPO}/kapua-sql:${IMAGE_VERSION}
+    ports:
+      - 8181:8181
+      - 3306:3306
+    volumes:
+      - dbdata:/var/h2/data
   events-broker:
     image: ${DOCKER_REPO}/kapua-events-broker:${IMAGE_VERSION}
     ports:
@@ -16,6 +23,7 @@ services:
       - 8883:8883
       - 61614:61614
     depends_on:
+      - db
       - events-broker
     environment:
       - datastore.elasticsearch.cluster=${DATASTORE_CLUSTER_NAME}
@@ -36,13 +44,6 @@ services:
       - KAPUA_KEY_PASSWORD
       - KAPUA_KEYSTORE
       - KAPUA_KEYSTORE_PASSWORD
-      - commons.db.jdbcConnectionUrlResolver
-      - commons.db.connection.scheme
-      - commons.db.connection.host
-      - commons.db.connection.port
-      - commons.db.name
-      - commons.db.username
-      - commons.db.password
     volumes:
       - brokerdata:/maven/data
   kapua-console:
@@ -51,6 +52,7 @@ services:
 #      - 8082:8080
     depends_on:
       - broker
+      - db
       - events-broker
     environment:
       - datastore.elasticsearch.cluster=${DATASTORE_CLUSTER_NAME}
@@ -75,19 +77,13 @@ services:
       - KAPUA_KEY_PASSWORD
       - KAPUA_KEYSTORE
       - KAPUA_KEYSTORE_PASSWORD
-      - commons.db.jdbcConnectionUrlResolver
-      - commons.db.connection.scheme
-      - commons.db.connection.host
-      - commons.db.connection.port
-      - commons.db.name
-      - commons.db.username
-      - commons.db.password
   kapua-api:
     image: ${DOCKER_REPO}/kapua-api:${IMAGE_VERSION}
 #    ports:
 #      - 8081:8080
     depends_on:
       - broker
+      - db
       - events-broker
     environment:
       - datastore.elasticsearch.cluster=${DATASTORE_CLUSTER_NAME}
@@ -112,13 +108,6 @@ services:
       - KAPUA_KEY_PASSWORD
       - KAPUA_KEYSTORE
       - KAPUA_KEYSTORE_PASSWORD
-      - commons.db.jdbcConnectionUrlResolver
-      - commons.db.connection.scheme
-      - commons.db.connection.host
-      - commons.db.connection.port
-      - commons.db.name
-      - commons.db.username
-      - commons.db.password
 
 volumes:
   dbdata:
