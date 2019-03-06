@@ -172,6 +172,8 @@
                 <include>io.netty:netty-all</include>
                 <include>io.netty:netty</include>
 
+                <include>mysql:mysql-connector-java</include>
+
                 <include>javax.inject:javax.inject</include>
 
                 <include>joda-time:joda-time</include>
